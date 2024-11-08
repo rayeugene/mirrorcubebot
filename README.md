@@ -1,1 +1,7 @@
 # mirrorcubebot
+
+## Project Overview
+This project, *Solving Shape-Shifting Mirror Cube with a Robotic Arm*, aims to extend robotic manipulation capabilities by developing a robot that can solve a shape-shifting mirror cube—a puzzle that changes its shape with each rotation due to varying piece sizes. Traditional robots solve Rubik's cubes by recognizing colors and using fixed algorithms, but the mirror cube presents unique challenges as it requires both spatial perception and adaptability to dynamic geometry. By equipping an IIWA robotic arm with a two-finger gripper and creating a robust simulation in Drake, our system will recognize cube configurations, interpret the puzzle’s geometry, and execute precise manipulations to solve it.
+
+## Key Components
+The project is divided into three primary phases: simulating the cube's unique transformations, recognizing its shifting configurations, and developing motion plans for manipulation. The simulation phase involves modeling the kinematics of the cube to capture its shape-shifting behavior accurately. In the recognition phase, computer vision techniques will analyze the puzzle’s geometry to identify configurations, relying solely on shape rather than color. Finally, the manipulation phase focuses on using the IIWA robotic arm to solve the cube by turning layers and rotating faces based on the recognized state. This project not only challenges robotic perception and manipulation but also explores potential applications in dynamic object handling in real-world settings like manufacturing and assembly.
