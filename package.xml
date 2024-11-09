@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>mirror_cube_bot</name>
+  <version>0.0.0</version>
+  <description>
+    mirror_cube_bot
+  </description>
+  <maintainer email="nbuono@mit.edu">Nico Buono</maintainer>
+  <mainatiner email="reugene@mit.edu">Raymond Bahng</maintainer>
+  <author>Nico Buono</author>
+  <author>Raymond Bahng</author>
+  <license>MIT</license>
+</package>
