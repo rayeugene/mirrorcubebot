@@ -79,13 +79,13 @@ by 100 for improved numerics. -->
       </visual>
     </link>      
     <joint name="ball_0_0_0" type="ball">
-        <pose>0.0125 0.0125 0.0125 0 0 0</pose> <!-- in child frame -->
-        <parent>center</parent>
-        <child>box_0_0_0</child>
-        <axis>
-            <dynamics><damping>0.1</damping></dynamics>
-            <limit><effort>0</effort></limit>
-        </axis>
+      <pose>0.0125 0.0125 0.0125 0 0 0</pose> <!-- in child frame -->
+      <parent>center</parent>
+      <child>box_0_0_0</child>
+      <axis>
+          <dynamics><damping>0.1</damping></dynamics>
+          <limit><effort>0</effort></limit>
+      </axis>
     </joint>
     <link name="box_1_0_0">
       <pose>0.0125 -0.0125 -0.0125 0 0 0</pose>

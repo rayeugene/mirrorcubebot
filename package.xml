@@ -6,8 +6,8 @@
     mirror_cube_bot
   </description>
   <maintainer email="nbuono@mit.edu">Nico Buono</maintainer>
-  <mainatiner email="reugene@mit.edu">Raymond Bahng</maintainer>
+  <!-- <mainatiner email="reugene@mit.edu">Raymond Bahng</maintainer> -->
   <author>Nico Buono</author>
-  <author>Raymond Bahng</author>
+  <!-- <author>Raymond Bahng</author> -->
   <license>MIT</license>
 </package>
