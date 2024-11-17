@@ -233,7 +233,7 @@ for t in t_lst:
 
 # Create gripper trajectory.
 gripper_t_lst = np.array([0.0, 5.0, 6.0, 11.0])
-gripper_knots = np.array([0.02, 0.02, 0.0, 0.0]).reshape(1, 4)
+gripper_knots = np.array([0.08, 0.08, 0.0, 0.0]).reshape(1, 4)
 g_traj = PiecewisePolynomial.FirstOrderHold(gripper_t_lst, gripper_knots)
 
 
