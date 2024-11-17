@@ -30,6 +30,7 @@ directives:
 - add_weld:
     parent: world
     child: mirror_cube::center
+    #child: mirror_cube::cubie_0_0_0
     X_PC:
         translation: [0.75, 0, 0]
         rotation: !Rpy { deg: [0, 0, 0] }

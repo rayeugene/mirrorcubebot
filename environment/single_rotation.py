@@ -27,7 +27,7 @@ meshcat = StartMeshcat()
 
 def setup_manipulation_station():
     builder = DiagramBuilder()
-    scenario = LoadScenario(filename="models/scenario.yaml")
+    scenario = LoadScenario(filename="models/simple.scenario.yaml")
 
     station = builder.AddSystem(MakeHardwareStation(scenario, meshcat))
     plant = station.GetSubsystemByName("plant")
@@ -239,7 +239,7 @@ g_traj = PiecewisePolynomial.FirstOrderHold(gripper_t_lst, gripper_knots)
 
 def CreateIiwaControllerPlant():
     """creates plant that includes only the robot and gripper, used for controllers."""
-    scenario = LoadScenario(filename="models/scenario.yaml")
+    scenario = LoadScenario(filename="models/simple.scenario.yaml")
     plant_robot = MakeMultibodyPlant(
         scenario=scenario, model_instance_names=["iiwa", "wsg"]
     )
@@ -259,7 +259,7 @@ def BuildAndSimulateTrajectory(q_traj, g_traj, duration=0.01):
     @param g_traj: Trajectory class used to initialize TrajectorySource for gripper.
     """
     builder = DiagramBuilder()
-    scenario = LoadScenario(filename="models/scenario.yaml")
+    scenario = LoadScenario(filename="models/simple.scenario.yaml")
     station = builder.AddSystem(MakeHardwareStation(scenario, meshcat))
     plant = station.GetSubsystemByName("plant")
     scene_graph = station.GetSubsystemByName("scene_graph")
