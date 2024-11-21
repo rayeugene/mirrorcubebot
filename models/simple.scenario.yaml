@@ -1,8 +1,8 @@
 directives:
 - add_model:
     name: iiwa
+    #file: package://mirror_cube_bot/models/iiwa7_no_collision.sdf
     file: package://drake_models/iiwa_description/sdf/iiwa7_no_collision.sdf
-    #file: file://{os.getcwd()}/models/iiwa7_no_collision.sdf
     default_joint_positions:
         iiwa_joint_1: [0]
         iiwa_joint_2: [0.6]
@@ -25,8 +25,7 @@ directives:
         rotation: !Rpy { deg: [90, 0, 90]}
 - add_model:
     name: mirror_cube
-    #file: package://mirrorcubebot/models/mirror_cube_2_by_2.sdf
-    file: file:///Users/reugene/Desktop/FA24/6.4210 Robotic Manipulation/Project/mirrorcubebot/models/mirror_cube_2_by_2.sdf
+    file: package://mirror_cube_bot/models/mirror_cube_2_by_2.sdf
 - add_weld:
     parent: world
     child: mirror_cube::center

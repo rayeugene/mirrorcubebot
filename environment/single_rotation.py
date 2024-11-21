@@ -14,6 +14,7 @@ from pydrake.all import (
     Solve,
     StartMeshcat,
     TrajectorySource,
+    WeldJoint
 )
 from pydrake.multibody import inverse_kinematics
 from pydrake.trajectories import PiecewisePolynomial
@@ -25,11 +26,25 @@ from manipulation.station import LoadScenario, MakeHardwareStation, MakeMultibod
 # Start the visualizer.
 meshcat = StartMeshcat()
 
+def ReplaceJointWithWeld(plant, joint):
+    for actuator in [
+        plant.get_joint_actuator(index) for index in plant.GetJointActuatorIndices()
+    ]:
+        if actuator.joint() == joint:
+            plant.RemoveJointActuator(actuator)
+
+    weld = WeldJoint(
+        joint.name(), joint.frame_on_parent(), joint.frame_on_child(), RigidTransform()
+    )
+    plant.RemoveJoint(joint)
+    plant.AddJoint(weld)
+
+
 def setup_manipulation_station():
     builder = DiagramBuilder()
     scenario = LoadScenario(filename="models/simple.scenario.yaml")
 
-    station = builder.AddSystem(MakeHardwareStation(scenario, meshcat))
+    station = builder.AddSystem(MakeHardwareStation(scenario, meshcat, package_xmls=[os.getcwd() + "/package.xml"]))
     plant = station.GetSubsystemByName("plant")
     scene_graph = station.GetSubsystemByName("scene_graph")
     AddMultibodyTriad(plant.GetFrameByName("body"), scene_graph)
@@ -61,24 +76,6 @@ def setup_manipulation_station():
 # Get initial pose of the gripper by using default context of manip station.
 initial_pose = setup_manipulation_station()
 
-# p_WR = np.array([0.5, 0, 0])  # frame R: center of the cube
-
-# p_Rhandle = np.array([0, 0, 0.01])  # handle: the upper side of the cube.
-# p_Whandle = p_WR + p_Rhandle
-
-# p_Rhinge = np.array([0.008, -0.1395, 0])  # hinge: frame attached to right hinge.
-# p_Whinge = p_WR + p_Rhinge
-
-# p_Rhinge_handle = p_Rhandle - p_Rhinge
-# r_Rhinge_handle = np.linalg.norm(
-#     p_Rhandle - p_Rhinge
-# )  # distance between handle and hinge.
-
-# theta_Rhinge_handle = np.arctan2(p_Rhinge_handle[1], p_Rhinge_handle[0])
-angle_start = 0
-angle_end = np.pi / 2
-
-
 # Interpolate pose for opening doors.
 def InterpolatePoseOpen(t):
     # Start by interpolating the yaw angle of the hinge.
@@ -92,7 +89,7 @@ def InterpolatePoseOpen(t):
     X_Whandle = RigidTransform(R_Whandle, p_Whandle)
 
     # Add a little offset to account for gripper.
-    p_handleG = np.array([0.0, 0.1, 0.0])
+    p_handleG = np.array([0.0, 0.114, 0.0])
     R_handleG = RollPitchYaw(0, np.pi, np.pi).ToRotationMatrix()
     X_handleG = RigidTransform(R_handleG, p_handleG)
     X_WG = X_Whandle.multiply(X_handleG)
@@ -141,87 +138,6 @@ def InterpolatePose(t):
     else:
         # Duration of the open motion is set to 5 seconds.
         return InterpolatePoseOpen((t - 6.0) / 5.0)
-    
-
-# p_WR = np.array([0.7477, 0.1445, 0.4148])  # frame R: center of left door.
-
-# p_Rhandle = np.array([-0.033, 0.1245, 0])  # handle: frame attached to right handle.
-# p_Whandle = p_WR + p_Rhandle
-
-# p_Rhinge = np.array([0.008, -0.1395, 0])  # hinge: frame attached to right hinge.
-# p_Whinge = p_WR + p_Rhinge
-
-# p_Rhinge_handle = p_Rhandle - p_Rhinge
-# r_Rhinge_handle = np.linalg.norm(
-#     p_Rhandle - p_Rhinge
-# )  # distance between handle and hinge.
-
-# theta_Rhinge_handle = np.arctan2(p_Rhinge_handle[1], p_Rhinge_handle[0])
-# angle_end = np.pi  # end of angle. Decrease to 120~160 deg for the easy version.
-
-
-# # Interpolate pose for opening doors.
-# def InterpolatePoseOpen(t):
-#     # Start by interpolating the yaw angle of the hinge.
-#     angle_start = theta_Rhinge_handle
-#     theta = angle_start + (angle_end - angle_start) * t
-#     # Convert to position and rotation.
-#     p_Whandle = r_Rhinge_handle * np.array([np.cos(theta), np.sin(theta), 0]) + p_Whinge
-#     # Add some offset here to account for gripper yaw angle.
-#     R_Whandle = RollPitchYaw(0, 0, theta).ToRotationMatrix()
-#     X_Whandle = RigidTransform(R_Whandle, p_Whandle)
-
-#     # Add a little offset to account for gripper.
-#     p_handleG = np.array([0.0, 0.1, 0.0])
-#     R_handleG = RollPitchYaw(0, np.pi, np.pi).ToRotationMatrix()
-#     X_handleG = RigidTransform(R_handleG, p_handleG)
-#     X_WG = X_Whandle.multiply(X_handleG)
-#     return X_WG
-
-
-# ## Interpolate Pose for entry.
-# def make_gripper_orientation_trajectory():
-#     traj = PiecewiseQuaternionSlerp()
-#     traj.Append(0.0, initial_pose.rotation())
-#     traj.Append(5.0, InterpolatePoseOpen(0.0).rotation())
-#     return traj
-
-
-# def make_gripper_position_trajectory():
-#     traj = PiecewisePolynomial.FirstOrderHold(
-#         [0.0, 5.0],
-#         np.vstack(
-#             [
-#                 [initial_pose.translation()],
-#                 [InterpolatePoseOpen(0.0).translation()],
-#             ]
-#         ).T,
-#     )
-#     return traj
-
-
-# entry_traj_rotation = make_gripper_orientation_trajectory()
-# entry_traj_translation = make_gripper_position_trajectory()
-
-
-# def InterpolatePoseEntry(t):
-#     return RigidTransform(
-#         RotationMatrix(entry_traj_rotation.orientation(t)),
-#         entry_traj_translation.value(t),
-#     )
-
-
-# # Wrapper function for end-effector pose. Total time: 11 seconds.
-# def InterpolatePose(t):
-#     if t < 5.0:
-#         # Duration of entry motion is set to 5 seconds.
-#         return InterpolatePoseEntry(t)
-#     elif (t >= 5.0) and (t < 6.0):
-#         # Wait for a second to grip the handle.
-#         return InterpolatePoseEntry(5.0)
-#     else:
-#         # Duration of the open motion is set to 5 seconds.
-#         return InterpolatePoseOpen((t - 6.0) / 5.0)
 
 
 # Visualize our end-effector nominal trajectory.
@@ -260,7 +176,7 @@ def BuildAndSimulateTrajectory(q_traj, g_traj, duration=0.01):
     """
     builder = DiagramBuilder()
     scenario = LoadScenario(filename="models/simple.scenario.yaml")
-    station = builder.AddSystem(MakeHardwareStation(scenario, meshcat))
+    station = builder.AddSystem(MakeHardwareStation(scenario, meshcat, package_xmls=[os.getcwd() + "/package.xml"]))
     plant = station.GetSubsystemByName("plant")
     scene_graph = station.GetSubsystemByName("scene_graph")
     AddMultibodyTriad(plant.GetFrameByName("body"), scene_graph)
