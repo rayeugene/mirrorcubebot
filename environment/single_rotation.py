@@ -23,8 +23,6 @@ from manipulation.meshcat_utils import AddMeshcatTriad
 from manipulation.scenarios import AddMultibodyTriad
 from manipulation.station import LoadScenario, MakeHardwareStation, MakeMultibodyPlant
 
-# Start the visualizer.
-meshcat = StartMeshcat()
 
 def ReplaceJointWithWeld(plant, joint):
     for actuator in [
@@ -40,10 +38,9 @@ def ReplaceJointWithWeld(plant, joint):
     plant.AddJoint(weld)
 
 
-def setup_manipulation_station():
+def setup_manipulation_station(meshcat):
     builder = DiagramBuilder()
     scenario = LoadScenario(filename="models/simple.scenario.yaml")
-
     station = builder.AddSystem(MakeHardwareStation(scenario, meshcat, package_xmls=[os.getcwd() + "/package.xml"]))
     plant = station.GetSubsystemByName("plant")
     scene_graph = station.GetSubsystemByName("scene_graph")
@@ -73,9 +70,6 @@ def setup_manipulation_station():
     return initial_pose
 
 
-# Get initial pose of the gripper by using default context of manip station.
-initial_pose = setup_manipulation_station()
-
 # Interpolate pose for opening doors.
 def InterpolatePoseOpen(t):
     # Start by interpolating the yaw angle of the hinge.
@@ -97,14 +91,14 @@ def InterpolatePoseOpen(t):
 
 
 ## Interpolate Pose for entry.
-def make_gripper_orientation_trajectory():
+def make_gripper_orientation_trajectory(initial_pose):
     traj = PiecewiseQuaternionSlerp()
     traj.Append(0.0, initial_pose.rotation())
     traj.Append(5.0, InterpolatePoseOpen(0.0).rotation())
     return traj
 
 
-def make_gripper_position_trajectory():
+def make_gripper_position_trajectory(initial_pose):
     traj = PiecewisePolynomial.FirstOrderHold(
         [0.0, 5.0],
         np.vstack(
@@ -117,10 +111,9 @@ def make_gripper_position_trajectory():
     return traj
 
 
-entry_traj_rotation = make_gripper_orientation_trajectory()
-entry_traj_translation = make_gripper_position_trajectory()
 
-def InterpolatePoseEntry(t):
+
+def InterpolatePoseEntry(t, entry_traj_rotation, entry_traj_translation):
     return RigidTransform(
         RotationMatrix(entry_traj_rotation.orientation(t)),
         entry_traj_translation.value(t),
@@ -128,29 +121,16 @@ def InterpolatePoseEntry(t):
 
 
 # Wrapper function for end-effector pose. Total time: 11 seconds.
-def InterpolatePose(t):
+def InterpolatePose(t, entry_traj_rotation, entry_traj_translation):
     if t < 5.0:
         # Duration of entry motion is set to 5 seconds.
-        return InterpolatePoseEntry(t)
+        return InterpolatePoseEntry(t, entry_traj_rotation, entry_traj_translation)
     elif (t >= 5.0) and (t < 6.0):
         # Wait for a second to grip the handle.
-        return InterpolatePoseEntry(5.0)
+        return InterpolatePoseEntry(5.0,entry_traj_rotation, entry_traj_translation)
     else:
         # Duration of the open motion is set to 5 seconds.
         return InterpolatePoseOpen((t - 6.0) / 5.0)
-
-
-# Visualize our end-effector nominal trajectory.
-t_lst = np.linspace(0, 11, 30)
-pose_lst = []
-for t in t_lst:
-    AddMeshcatTriad(meshcat, path=str(t), X_PT=InterpolatePose(t), opacity=0.02)
-    pose_lst.append(InterpolatePose(t))
-
-# Create gripper trajectory.
-gripper_t_lst = np.array([0.0, 5.0, 6.0, 11.0])
-gripper_knots = np.array([0.08, 0.08, 0.0, 0.0]).reshape(1, 4)
-g_traj = PiecewisePolynomial.FirstOrderHold(gripper_t_lst, gripper_knots)
 
 
 def CreateIiwaControllerPlant():
@@ -169,7 +149,7 @@ def CreateIiwaControllerPlant():
     return plant_robot, link_frame_indices
 
 
-def BuildAndSimulateTrajectory(q_traj, g_traj, duration=0.01):
+def BuildAndSimulateTrajectory(q_traj, g_traj, meshcat, duration=0.01, ):
     """Simulate trajectory for manipulation station.
     @param q_traj: Trajectory class used to initialize TrajectorySource for joints.
     @param g_traj: Trajectory class used to initialize TrajectorySource for gripper.
@@ -282,6 +262,35 @@ def create_q_knots(pose_lst):
 
     return q_knots
 
-q_knots = np.array(create_q_knots(pose_lst))
-q_traj = PiecewisePolynomial.CubicShapePreserving(t_lst, q_knots[:, 0:7].T)
-simulator, station_plant = BuildAndSimulateTrajectory(q_traj, g_traj, 11.0)
+
+
+
+def main():
+    # Start the visualizer.
+    meshcat = StartMeshcat()
+
+    # Get initial pose of the gripper by using default context of manip station.
+    initial_pose = setup_manipulation_station(meshcat)
+
+    entry_traj_rotation = make_gripper_orientation_trajectory(initial_pose)
+    entry_traj_translation = make_gripper_position_trajectory(initial_pose)
+
+    # Visualize our end-effector nominal trajectory.
+    t_lst = np.linspace(0, 11, 30)
+    pose_lst = []
+    for t in t_lst:
+        AddMeshcatTriad(meshcat, path=str(t), X_PT=InterpolatePose(t, entry_traj_rotation, entry_traj_translation), opacity=0.02)
+        pose_lst.append(InterpolatePose(t, entry_traj_rotation, entry_traj_translation))
+
+    # Create gripper trajectory.
+    gripper_t_lst = np.array([0.0, 5.0, 6.0, 11.0])
+    gripper_knots = np.array([0.08, 0.08, 0.0, 0.0]).reshape(1, 4)
+    g_traj = PiecewisePolynomial.FirstOrderHold(gripper_t_lst, gripper_knots)
+
+    q_knots = np.array(create_q_knots(pose_lst))
+    q_traj = PiecewisePolynomial.CubicShapePreserving(t_lst, q_knots[:, 0:7].T)
+    simulator, station_plant = BuildAndSimulateTrajectory(q_traj, g_traj, meshcat, 11.0)
+
+
+if __name__ == "__main__":
+    main()
