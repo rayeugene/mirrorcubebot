@@ -1,7 +1,6 @@
 directives:
 - add_model:
     name: iiwa
-    #file: package://mirror_cube_bot/models/iiwa7_no_collision.sdf
     file: package://drake_models/iiwa_description/sdf/iiwa7_no_collision.sdf
     default_joint_positions:
         iiwa_joint_1: [0]
@@ -29,9 +28,10 @@ directives:
 - add_weld:
     parent: world
     child: mirror_cube::center
-    #child: mirror_cube::cubie_0_0_0
     X_PC:
-        translation: [0.75, 0, 0]
+        #translation: [0.75, 0, 0]
+        translation: [0.5, 0.5, 0.25]
+        #translation: [0.25, 0.25, 0.25]
         rotation: !Rpy { deg: [0, 0, 0] }
 model_drivers:
     iiwa: !IiwaDriver
