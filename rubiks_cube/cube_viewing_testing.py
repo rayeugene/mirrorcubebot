@@ -16,8 +16,8 @@ def main():
     # Start the visualizer.
     meshcat = StartMeshcat()
 
-    cube_file = "package://manipulation/rubiks_cube_2_by_2.sdf"
-    # mirror_cube_file = "models/mirror_cube_2_by_2.sdf"
+    # cube_file = "package://manipulation/rubiks_cube_2_by_2.sdf"
+    mirror_cube_file = "models/mirror_cube_2_by_2.sdf"
 
     meshcat.Delete()
 
