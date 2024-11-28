@@ -66,8 +66,8 @@
 				</material>
 			</visual>
 		</link>
-		<joint name="ball_0_0_0" type="ball">
-			<pose>0.01 0.015 0.02 -0.0 -0.0 -0.0</pose>
+		<joint name="ball_0_0_0" type="fixed">
+			<pose>-0.01 -0.015 -0.02 -0.0 -0.0 -0.0</pose>
 			<parent>center</parent>
 			<child>cubie_0_0_0</child>
 			<axis>
@@ -387,6 +387,12 @@
 				</limit>
 			</axis>
 		</joint>
+    <!-- <link name="anchor_1">
+      <pose>0.04 -0.03 -0.04 0.0 0.0 0.0</pose>
+    </link>
+    <link name="anchor_2">
+      <pose>0.04 0 -0.04 0.0 0.0 0.0</pose>
+    </link> -->
 		<link name="cubie_1_0_1">
 			<pose>0.019999999999999997 -0.015 0.009999999999999998 0.0 0.0 0.0</pose>
 			<inertial>

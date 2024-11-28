@@ -14,6 +14,7 @@ from pydrake.all import (
 )
 from pydrake.multibody import inverse_kinematics
 from pydrake.trajectories import PiecewisePolynomial
+from pydrake.visualization import ConnectMeshcatVisualizer
 
 from manipulation.meshcat_utils import AddMeshcatTriad
 from manipulation.scenarios import AddMultibodyTriad
@@ -43,7 +44,7 @@ def compute_handle_pose(cube_center_position, offset, rotation_angles, t, is_neg
 
     return p_Whandle, theta
 
-def InterpolatePoseRotate(t: float, rotation: str) -> RigidTransform:
+def InterpolatePoseRotate(t: float, rotation: str, cube_rotation_center: RigidTransform=None) -> RigidTransform:
     """
     Interpolates the pose for opening doors based on the rotation type and time.
 
@@ -57,7 +58,7 @@ def InterpolatePoseRotate(t: float, rotation: str) -> RigidTransform:
     cube_center_position = [0.5, 0.5, 0.25]
     is_negative = t < 0
 
-    # Define rotation configurations
+    # Define rotation configurations about the center of the cube
     rotation_config = {
         'U': ([0.0, 0.0, 0.01], (np.pi / 2, 0)),
         'U\'': ([0.0, 0.0, 0.01], (np.pi / 2, np.pi)),
@@ -117,7 +118,7 @@ def InterpolatePoseEntry(t, entry_traj_rotation, entry_traj_translation):
         entry_traj_translation.value(t),
     )
 
-def InterpolatePose(t, rotation, entry_traj_rotation, entry_traj_translation, entry_duration, grip_duration, rotate_duration):
+def InterpolatePose(t, rotation, cube_center_pose, entry_traj_rotation, entry_traj_translation, entry_duration, grip_duration, rotate_duration):
     if t < entry_duration:
         return InterpolatePoseEntry(t / entry_duration if entry_duration != 0 else 0.0, 
                                     entry_traj_rotation, 
@@ -127,9 +128,9 @@ def InterpolatePose(t, rotation, entry_traj_rotation, entry_traj_translation, en
                                     entry_traj_rotation, 
                                     entry_traj_translation)
     elif t < entry_duration + grip_duration + rotate_duration:
-        return InterpolatePoseRotate((t - (entry_duration + grip_duration)) / rotate_duration, rotation)
+        return InterpolatePoseRotate((t - (entry_duration + grip_duration)) / rotate_duration, rotation, cube_center_pose)
     else: 
-        return InterpolatePoseRotate(1.0, rotation)
+        return InterpolatePoseRotate(1.0, rotation, cube_center_pose)
 
 
 def CreateIiwaControllerPlant():
@@ -175,8 +176,26 @@ def BuildAndSimulateTrajectory(builder, station, q_traj, g_traj, meshcat, durati
 
     diagram = builder.Build()
     simulator = Simulator(diagram)
+
+    # diagram_context = simulator.get_mutable_context()
+    # station_context = station.GetMyContextFromRoot(diagram_context)
+
+    # plant = station.GetSubsystemByName("plant")
+    # gripper_frame = plant.GetFrameByName("body")
+
+
     meshcat.StartRecording(set_visualizations_while_recording=False)
     simulator.AdvanceTo(duration)
+
+    # # Log and visualize gripper frame pose in MeshCat
+    # gripper_pose_in_world = plant.CalcRelativeTransform(
+    #     station_context,
+    #     frame_A=plant.world_frame(),
+    #     frame_B=gripper_frame,
+    # )
+    # print(f"Gripper frame pose in world: {gripper_pose_in_world}")
+    # meshcat.SetTransform("gripper_frame", gripper_pose_in_world.GetAsMatrix4())
+
     meshcat.PublishRecording()
 
     return simulator
@@ -272,8 +291,12 @@ def main():
     entry_traj_rotation = make_gripper_orientation_trajectory(initial_pose, rotation)
     entry_traj_translation = make_gripper_position_trajectory(initial_pose, rotation)
 
+    cube_center = plant.GetBodyByName("center") # cube center of rotation
+    X_WCubeCenter = plant.EvalBodyPoseInWorld(context, cube_center)
+    AddMeshcatTriad(meshcat, path=str("c"), X_PT=X_WCubeCenter,opacity=0.01)
+
     entry_duration = 5.0
-    grip_duration = 1.0
+    grip_duration = 5.0
     rotate_duration = 5.0
     total_duration = entry_duration + grip_duration + rotate_duration
     interval_count = int(total_duration * 2 + 1)
@@ -281,9 +304,11 @@ def main():
     t_lst = np.linspace(0, total_duration, interval_count)
     pose_lst = []
     for t in t_lst:
-        pose = InterpolatePose(t, rotation, entry_traj_rotation, entry_traj_translation, entry_duration, grip_duration, rotate_duration)
+        pose = InterpolatePose(t, rotation, X_WCubeCenter, entry_traj_rotation, entry_traj_translation, entry_duration, grip_duration, rotate_duration)
         AddMeshcatTriad(meshcat, path=str(t), X_PT = pose, opacity=0.02)
         pose_lst.append(pose)
+    
+    print(pose_lst)
 
     gripper_t_lst = np.array([0.0, 
                               entry_duration, 
