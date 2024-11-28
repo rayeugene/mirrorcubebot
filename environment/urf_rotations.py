@@ -14,7 +14,6 @@ from pydrake.all import (
 )
 from pydrake.multibody import inverse_kinematics
 from pydrake.trajectories import PiecewisePolynomial
-from pydrake.visualization import ConnectMeshcatVisualizer
 
 from manipulation.meshcat_utils import AddMeshcatTriad
 from manipulation.scenarios import AddMultibodyTriad
