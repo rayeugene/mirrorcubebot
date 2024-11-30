@@ -1,0 +1,3 @@
+[submodule "rubiks_cube/rubik-solver"]
+	path = rubiks_cube/rubik-solver
+	url = https://github.com/PizzaRoll04/rubik-solver.git
