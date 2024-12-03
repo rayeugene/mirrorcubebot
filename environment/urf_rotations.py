@@ -30,42 +30,62 @@ from manipulation.station import LoadScenario, MakeHardwareStation, MakeMultibod
 
 from solver.geometry import assign_heights, get_grip_position
 
-def compute_handle_pose(cube_center_position, offset, rotation_angles, t, current_state, cubie_heights, rotation, is_negative=False):
+def compute_handle_pose(
+    cube_center_position, offset, rotation_angles, t, current_state, 
+    cubie_heights, rotation, is_negative=False
+):
     """
-    Compute the handle's position and rotation matrix for a given rotation and time.
-    
+    Compute the position and rotation of a handle based on cube parameters, rotation, and time.
+
     Parameters:
-        cube_center_position (list): The cube's center position.
-        offset (list): The offset for the handle's position.
-        rotation_angles (tuple): Start and end angles (radians).
-        t (float): Interpolation parameter (0 to 1).
-        is_negative (bool): Whether to handle cases where t < 0.
-    
+        cube_center_position (list or numpy array): 
+            The 3D coordinates of the cube's center position.
+        offset (list or numpy array): 
+            Offset vector applied to the cube center to calculate the handle's position.
+        rotation_angles (tuple of float): 
+            A tuple (angle_start, angle_end) specifying the start and end angles (in radians) 
+            for the rotation.
+        t (float): 
+            Interpolation parameter between 0 and 1. Determines the progress of the rotation.
+        current_state (object): 
+            Current state of the cube, providing contextual data for the handle's position.
+        cubie_heights (list or numpy array): 
+            Heights of individual cubies, used for determining grip positioning.
+        rotation (str): 
+            The rotation direction (e.g., 'U', 'U\'', 'F', 'F\'', 'R', 'R\'').
+        is_negative (bool, optional): 
+            Flag indicating special handling for cases where `t < 0`. Defaults to False.
+
     Returns:
-        tuple: Position (numpy array) and rotation matrix.
+        tuple: 
+            - numpy array: Handle position in world coordinates (p_Whandle).
+            - float: Rotation angle (theta) after interpolation.
     """
     angle_start, angle_end = rotation_angles
 
-    center_of_grip = get_grip_position(current_state, cubie_heights, rotation)
-    distance_of_center = np.sqrt(sum([x**2 for x in center_of_grip]))
-    #print(center_of_grip, distance_of_center)
-    center_degree = np.arctan2(center_of_grip[1], center_of_grip[0]) + max(t,0) * (angle_end - angle_start) - np.pi/2
-    face_center_position_2d = [distance_of_center * np.cos(center_degree), distance_of_center * np.sin(center_degree)]
-    #print(face_center_position_2d, center_degree)
+    vertical_offset, horizontal_offset = get_grip_position(current_state, cubie_heights, rotation)
+    distance_from_axis = np.sqrt(vertical_offset ** 2 + horizontal_offset ** 2)
 
-    rotation_face = rotation[0]
-    if rotation_face == 'U':
-        face_center_position = np.array([face_center_position_2d[0], face_center_position_2d[1], 0])
-    elif rotation_face == 'F':
-        face_center_position = np.array([0, face_center_position_2d[0], face_center_position_2d[1]])
-    elif rotation_face == 'R':
-        face_center_position = np.array([face_center_position_2d[1], 0, face_center_position_2d[0]])
+    if rotation == 'U':
+        angle = np.arctan2(vertical_offset, horizontal_offset) - max(t,0) * np.pi/2
+        face_center_position = np.array([distance_from_axis * np.cos(angle), distance_from_axis * np.sin(angle), 0])
+    if rotation == 'U\'':
+        angle = np.arctan2(vertical_offset, horizontal_offset) + max(t,0) * np.pi/2
+        face_center_position = np.array([distance_from_axis * np.cos(angle), distance_from_axis * np.sin(angle), 0])
+    if rotation == 'F':
+        angle = np.arctan2(horizontal_offset, -vertical_offset) + max(t,0) * np.pi/2
+        face_center_position = np.array([0, distance_from_axis * np.cos(angle), distance_from_axis * np.sin(angle)])
+    if rotation == 'F\'':
+        angle = np.arctan2(horizontal_offset, -vertical_offset) - max(t,0) * np.pi/2
+        face_center_position = np.array([0, distance_from_axis * np.cos(angle), distance_from_axis * np.sin(angle)])
+    if rotation == 'R':
+        angle = np.arctan2(horizontal_offset, vertical_offset) - max(t,0) * np.pi/2
+        face_center_position = np.array([distance_from_axis * np.cos(angle), 0, distance_from_axis * np.sin(angle)])
+    if rotation == 'R\'':
+        angle = np.arctan2(horizontal_offset, vertical_offset) + max(t,0) * np.pi/2
+        face_center_position = np.array([distance_from_axis * np.cos(angle), 0, distance_from_axis * np.sin(angle)])
     
-    #print(face_center_position_2d)
     p_Whandle = np.add(np.add(cube_center_position, offset), face_center_position)
-    #p_Whandle = np.add(cube_center_position, offset)
-    # print(p_Whandle)
-    # print('\n')
 
     theta = angle_start + (angle_end - angle_start) * t
 
@@ -293,7 +313,7 @@ def create_q_knots(pose_lst):
     return q_knots
 
 def main():
-    rotation = 'U'
+    rotation = 'R'
     
     meshcat = StartMeshcat()
 
@@ -311,7 +331,7 @@ def main():
 
     entry_duration = 5.0
     grip_duration = 1.0
-    rotate_duration = 15.0
+    rotate_duration = 20.0
     total_duration = entry_duration + grip_duration + rotate_duration
     interval_count = int(total_duration * 3 + 1)
 
@@ -319,9 +339,10 @@ def main():
     pose_lst = []
     for t in t_lst:
         pose = InterpolatePose(t, rotation, entry_traj_rotation, entry_traj_translation, current_state, cubie_heights, entry_duration, grip_duration, rotate_duration)
-        print(t)
-        print(pose.translation())
-        print('\n')
+        #print(t)
+        #print(pose.translation())
+        #print(pose.rotation())
+        #print('\n')
         AddMeshcatTriad(meshcat, path=str(t), X_PT = pose, opacity=0.02)
         pose_lst.append(pose)
 
