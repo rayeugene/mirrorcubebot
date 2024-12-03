@@ -67,32 +67,36 @@ def compute_handle_pose(
     distance_from_axis = np.sqrt(vertical_offset ** 2 + horizontal_offset ** 2)
 
     if rotation == 'U':
-        angle = np.arctan2(vertical_offset, horizontal_offset) - max(t,0) * np.pi/2
+        angle = np.arctan2(vertical_offset, horizontal_offset) - min(max(t,0),1) * np.pi/2
         face_center_position = np.array([distance_from_axis * np.cos(angle), distance_from_axis * np.sin(angle), 0])
     if rotation == 'U\'':
-        angle = np.arctan2(vertical_offset, horizontal_offset) + max(t,0) * np.pi/2
+        angle = np.arctan2(vertical_offset, horizontal_offset) + min(max(t,0),1) * np.pi/2
         face_center_position = np.array([distance_from_axis * np.cos(angle), distance_from_axis * np.sin(angle), 0])
     if rotation == 'F':
-        angle = np.arctan2(horizontal_offset, -vertical_offset) + max(t,0) * np.pi/2
+        angle = np.arctan2(horizontal_offset, -vertical_offset) + min(max(t,0),1) * np.pi/2
         face_center_position = np.array([0, distance_from_axis * np.cos(angle), distance_from_axis * np.sin(angle)])
     if rotation == 'F\'':
-        angle = np.arctan2(horizontal_offset, -vertical_offset) - max(t,0) * np.pi/2
+        angle = np.arctan2(horizontal_offset, -vertical_offset) - min(max(t,0),1) * np.pi/2
         face_center_position = np.array([0, distance_from_axis * np.cos(angle), distance_from_axis * np.sin(angle)])
     if rotation == 'R':
-        angle = np.arctan2(horizontal_offset, vertical_offset) - max(t,0) * np.pi/2
+        angle = np.arctan2(horizontal_offset, vertical_offset) - min(max(t,0),1) * np.pi/2
         face_center_position = np.array([distance_from_axis * np.cos(angle), 0, distance_from_axis * np.sin(angle)])
     if rotation == 'R\'':
-        angle = np.arctan2(horizontal_offset, vertical_offset) + max(t,0) * np.pi/2
+        angle = np.arctan2(horizontal_offset, vertical_offset) + min(max(t,0),1) * np.pi/2
         face_center_position = np.array([distance_from_axis * np.cos(angle), 0, distance_from_axis * np.sin(angle)])
     
     p_Whandle = np.add(np.add(cube_center_position, offset), face_center_position)
 
-    theta = angle_start + (angle_end - angle_start) * t
+    theta = angle_start + (angle_end - angle_start) * min(max(t,0),1)
 
     if is_negative:
         pregrasp_offset = np.array([0.07 if x > 0 else -0.07 if x < 0 else 0 for x in offset])
         p_Whandle += pregrasp_offset
         theta = angle_start
+    if t > 1:
+        postgrasp_offset = np.array([0.07 if x > 0 else -0.07 if x < 0 else 0 for x in offset])
+        p_Whandle += postgrasp_offset
+
 
     return p_Whandle, theta
 
@@ -164,13 +168,38 @@ def make_gripper_position_trajectory(initial_pose, rotation, current_state, cubi
     )
     return traj
 
+## Interpolate Pose for exit.
+def make_gripper_orientation_exit_trajectory(rotation, current_state, cubie_heights):
+    traj = PiecewiseQuaternionSlerp()
+    traj.Append(0.0, InterpolatePoseRotate(1.0, rotation, current_state, cubie_heights).rotation())
+    traj.Append(1.0, InterpolatePoseRotate(2.0, rotation, current_state, cubie_heights).rotation())
+    return traj
+
+def make_gripper_position_exit_trajectory(rotation, current_state, cubie_heights):
+    traj = PiecewisePolynomial.FirstOrderHold(
+        [0.0, 1.0],
+        np.vstack(
+            [
+                [InterpolatePoseRotate(1.0, rotation, current_state, cubie_heights).translation()],
+                [InterpolatePoseRotate(2.0, rotation, current_state, cubie_heights).translation()],
+            ]
+        ).T,
+    )
+    return traj
+
 def InterpolatePoseEntry(t, entry_traj_rotation, entry_traj_translation):
     return RigidTransform(
         RotationMatrix(entry_traj_rotation.orientation(t)),
         entry_traj_translation.value(t),
     )
 
-def InterpolatePose(t, rotation, entry_traj_rotation, entry_traj_translation, current_state, cubie_heights, entry_duration, grip_duration, rotate_duration):
+def InterpolatePoseExit(t, exit_traj_rotation, exit_traj_translation):
+    return RigidTransform(
+        RotationMatrix(exit_traj_rotation.orientation(t)),
+        exit_traj_translation.value(t),
+    )
+
+def InterpolatePose(t, rotation, entry_traj_rotation, entry_traj_translation, exit_traj_rotation, exit_traj_translation, current_state, cubie_heights, entry_duration, grip_duration, rotate_duration, exit_duration):
     if t < entry_duration:
         return InterpolatePoseEntry(t / entry_duration if entry_duration != 0 else 0.0, 
                                     entry_traj_rotation, 
@@ -181,8 +210,12 @@ def InterpolatePose(t, rotation, entry_traj_rotation, entry_traj_translation, cu
                                     entry_traj_translation)
     elif t < entry_duration + grip_duration + rotate_duration:
         return InterpolatePoseRotate((t - (entry_duration + grip_duration)) / rotate_duration, rotation, current_state, cubie_heights)
+    elif t < entry_duration + grip_duration + rotate_duration + exit_duration:
+        return InterpolatePoseExit(t - (entry_duration + grip_duration + rotate_duration) / exit_duration,
+                                   exit_traj_rotation,
+                                   exit_traj_translation)
     else: 
-        return InterpolatePoseRotate(1.0, rotation, current_state, cubie_heights)
+        return InterpolatePoseRotate(2.0, rotation, current_state, cubie_heights)
 
 
 def CreateIiwaControllerPlant():
@@ -329,31 +362,37 @@ def main():
     entry_traj_rotation = make_gripper_orientation_trajectory(initial_pose, rotation, current_state, cubie_heights)
     entry_traj_translation = make_gripper_position_trajectory(initial_pose, rotation, current_state, cubie_heights)
 
+    exit_traj_rotation = make_gripper_orientation_exit_trajectory(rotation, current_state, cubie_heights)
+    exit_traj_translation = make_gripper_position_exit_trajectory(rotation, current_state, cubie_heights)
+
     entry_duration = 5.0
     grip_duration = 1.0
     rotate_duration = 20.0
-    total_duration = entry_duration + grip_duration + rotate_duration
+    exit_duration = 1.0
+    total_duration = entry_duration + grip_duration + rotate_duration + exit_duration
     interval_count = int(total_duration * 3 + 1)
 
     t_lst = np.linspace(0, total_duration, interval_count)
     pose_lst = []
     for t in t_lst:
-        pose = InterpolatePose(t, rotation, entry_traj_rotation, entry_traj_translation, current_state, cubie_heights, entry_duration, grip_duration, rotate_duration)
-        #print(t)
-        #print(pose.translation())
+        pose = InterpolatePose(t, rotation, entry_traj_rotation, entry_traj_translation, exit_traj_rotation, exit_traj_translation, current_state, cubie_heights, entry_duration, grip_duration, rotate_duration, exit_duration)
+        print(t)
+        print(pose.translation())
         #print(pose.rotation())
-        #print('\n')
+        print('\n')
         AddMeshcatTriad(meshcat, path=str(t), X_PT = pose, opacity=0.02)
         pose_lst.append(pose)
 
     gripper_t_lst = np.array([0.0, 
                               entry_duration, 
                               entry_duration + grip_duration, 
-                              entry_duration + grip_duration + rotate_duration])
+                              entry_duration + grip_duration + rotate_duration,
+                              entry_duration + grip_duration + rotate_duration + exit_duration])
     gripper_knots = np.array([0.08, 
                               0.08, 
                               0.00, 
-                              0.00]).reshape(1, 4)
+                              0.00,
+                              0.08]).reshape(1, 5)
     g_traj = PiecewisePolynomial.FirstOrderHold(gripper_t_lst, gripper_knots)
 
     q_knots = np.array(create_q_knots(pose_lst))
