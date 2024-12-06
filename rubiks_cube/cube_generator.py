@@ -26,6 +26,7 @@ class CubeGenerator:
         mass_density: int,
         solid_color: dict = None,
         file_out: str = "models/mirror_cube_2_by_2.sdf",
+        layer_spacing = 0.0005
     ):
         """
         args:
@@ -51,11 +52,11 @@ class CubeGenerator:
                     link_name = f"cubie_{x}_{y}_{z}"
                     parent_to_cubie = np.concatenate(
                         (
-                            -(cube_center - edge_length * np.array([x, y, z])) / 2,
+                            -(cube_center - (edge_length + layer_spacing) * np.array([x, y, z])) / 2,
                             np.zeros(3),
                         )
                     )
-                    cubie_size = 2 * np.abs(parent_to_cubie[:3])
+                    cubie_size = np.abs((cube_center - edge_length * np.array([x, y, z])))                    
                     mass = np.prod(cubie_size[:3]) * mass_density
                     inertia_xx = mass / 12 * (cubie_size[1] ** 2 + cubie_size[2] ** 2)
                     inertia_yy = mass / 12 * (cubie_size[0] ** 2 + cubie_size[2] ** 2)
