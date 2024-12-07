@@ -20,6 +20,7 @@ from pydrake.all import (
     Solve,
     StartMeshcat,
     TrajectorySource,
+    LeafSystem
 )
 from pydrake.multibody import inverse_kinematics
 from pydrake.trajectories import PiecewisePolynomial
@@ -382,6 +383,42 @@ def create_q_knots(pose_lst, scenario_file):
 
     return q_knots
 
+class TorqueController(LeafSystem):
+    """Wrapper System for Commanding Pure Torques to planar iiwa.
+    @param plant MultibodyPlant of the simulated plant.
+    @param ctrl_fun function object to implement torque control law.
+    @param vx Velocity towards the linear direction.
+    """
+
+    def __init__(self, plant):
+        LeafSystem.__init__(self)
+        self._plant = plant
+        self._plant_context = plant.CreateDefaultContext()
+        self._iiwa = plant.GetModelInstanceByName("iiwa")
+        self._G = plant.GetBodyByName("body").body_frame()
+        self._W = plant.world_frame()
+        self._joint_indices = [
+            plant.GetJointByName(j).position_start()
+            for j in ("iiwa_joint_2", "iiwa_joint_4", "iiwa_joint_6")
+        ]
+
+        self.DeclareVectorInputPort("iiwa_position_measured", 3)
+        # self.DeclareVectorInputPort("iiwa_velocity_measured", 3)
+
+        # If we want, we can add this in to do closed-loop force control on z.
+        # self.DeclareVectorInputPort("iiwa_torque_external", 3)
+
+        self.DeclareVectorOutputPort(
+            "iiwa_position_command", 3, self.CalcPositionOutput
+        )
+        # self.DeclareVectorOutputPort("iiwa_torque_cmd", 3, self.CalcTorqueOutput)
+        # # Compute foward kinematics so we can log the wsg position for grading.
+        # self.DeclareVectorOutputPort("wsg_position", 3, self.CalcWsgPositionOutput)
+
+    def CalcPositionOutput(self, context, output):
+        q_now = self.get_input_port(0).Eval(context)
+        output.SetFromVector(q_now)
+
 
 def main():
     rotation = 'R'
@@ -392,6 +429,10 @@ def main():
     meshcat = StartMeshcat()
 
     builder, plant, scene_graph, station = setup_manipulation_station(meshcat, scenario_file=scenario_file)
+
+    controller = builder.AddSystem(TorqueController(plant))
+    #print(controller.get_output_port().get_body_poses_output_port())
+    print(plant.get_body_poses_output_port())
     context = plant.CreateDefaultContext()
     gripper = plant.GetBodyByName("body")
     initial_pose = plant.EvalBodyPoseInWorld(context, gripper)
