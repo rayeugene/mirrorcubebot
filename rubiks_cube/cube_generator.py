@@ -26,6 +26,8 @@ class CubeGenerator:
         mass_density: int,
         solid_color: dict = None,
         file_out: str = "models/mirror_cube_2_by_2.sdf",
+        layer_spacing = 0.0001,
+        friction_coeff : np.array = np.array([0.1,0.1])
     ):
         """
         args:
@@ -37,6 +39,7 @@ class CubeGenerator:
                 The cube lives in Quadrant 1.
             mass_density: scalar that maps from volume to mass
             solid_color: optional, dict {'name':'color_name','rgba':np.array([r,g,b,a])}
+            friction_coeff: 2x, any nonnegative float. first index is dynamic coefficient and second is static
         returns:
             None
 
@@ -55,7 +58,8 @@ class CubeGenerator:
                             np.zeros(3),
                         )
                     )
-                    cubie_size = 2 * np.abs(parent_to_cubie[:3])
+                    parent_to_cubie[:3] -= np.ones(1) * layer_spacing/2 * np.array([1 if x==0 else -1,1 if y==0 else -1,1 if z==0 else -1])
+                    cubie_size = np.abs((cube_center - edge_length * np.array([x, y, z])))                    
                     mass = np.prod(cubie_size[:3]) * mass_density
                     inertia_xx = mass / 12 * (cubie_size[1] ** 2 + cubie_size[2] ** 2)
                     inertia_yy = mass / 12 * (cubie_size[0] ** 2 + cubie_size[2] ** 2)
@@ -74,6 +78,7 @@ class CubeGenerator:
                         inertia,
                         rgba_color,
                         rgba_core_color_name,
+                        friction_coeff
                     )
 
                     # this will have to change for a nxn cube
@@ -113,6 +118,7 @@ class CubeGenerator:
         inertia: np.array,
         rgba_color: np.array,
         rgba_core_color_name: str = None,
+        friction_coeff: np.array = np.array([0.2, 0.2])
     ):
         """
         args:
@@ -122,6 +128,7 @@ class CubeGenerator:
             mass: scalar in kg
             inertia: 6x, xx, xy, xz, yy, yz, zz
             rgba_color: 4x, float 0-1 for rgba diffuse tag
+            friction_coeff: 2x, any nonnegative float. first index is dynamic coefficient and second is static
         returns:
             ET_Element
         """
@@ -148,6 +155,11 @@ class CubeGenerator:
 
         collision = ET.SubElement(cubie_link, "collision", {"name": "collision"})
         collision.append(copy.deepcopy(geometry))
+        surface = ET.SubElement(collision, "surface")
+        friction = ET.SubElement(surface, "friction")
+        ode = ET.SubElement(friction, "ode")
+        ET.SubElement(ode, "mu").text = str(friction_coeff[0])
+        ET.SubElement(ode, "mu2").text = str(friction_coeff[1])
 
         visual = ET.SubElement(cubie_link, "visual")
         if rgba_core_color_name is not None:
@@ -241,7 +253,7 @@ class CubeGenerator:
 # CubeGenerator.generate_mirror_2_by_2(0.10, np.ones(3) * 0.05, 390) # normal cube with edge length 0.10
 # CubeGenerator.generate_mirror_2_by_2(0.06, np.array([0.02,0.03, 0.04]), 390, solid_color={'name':'silver','rgba':np.array([193/255.0,193/255.0,193/255.0,1])}) # silver mirror cube, 0.06 edge length
 CubeGenerator.generate_mirror_2_by_2(
-    0.06, np.array([0.02, 0.03, 0.04]), 390
+    0.06, np.array([0.02, 0.03, 0.04]), 390, layer_spacing = 0.0004, friction_coeff=np.array([0,0])
 )  # colored mirror cube, 0.06 edge length
 
 # sdf = ET.Element('sdf', {'version':'1.7'})
