@@ -253,8 +253,13 @@ class CubeGenerator:
 # CubeGenerator.generate_mirror_2_by_2(0.10, np.ones(3) * 0.05, 390) # normal cube with edge length 0.10
 # CubeGenerator.generate_mirror_2_by_2(0.06, np.array([0.02,0.03, 0.04]), 390, solid_color={'name':'silver','rgba':np.array([193/255.0,193/255.0,193/255.0,1])}) # silver mirror cube, 0.06 edge length
 CubeGenerator.generate_mirror_2_by_2(
-    0.06, np.array([0.02, 0.03, 0.04]), 390, layer_spacing = 0.0004, friction_coeff=np.array([0,0])
-)  # colored mirror cube, 0.06 edge length
+    edge_length = 0.06, 
+    cube_center = np.array([0.02, 0.03, 0.04]), 
+    mass_density = 390, 
+    file_out = "models/cubes/mirror_cube_2_by_2.sdf",
+    layer_spacing = 0.0004, 
+    friction_coeff=np.array([0,0])
+)  
 
 # sdf = ET.Element('sdf', {'version':'1.7'})
 # ET.ElementTree(sdf).write("test.sdf")
