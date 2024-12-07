@@ -1,3 +1,4 @@
 --extra-index-url https://drake-packages.csail.mit.edu/whl/nightly
 manipulation==2024.11.07
 ipykernel
+super-rubik-cube
