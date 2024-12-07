@@ -25,8 +25,7 @@ directives:
 - add_model:
     name: mirror_cube
     #file: package://mirror_cube_bot/models/mirror_cube_2_by_2.sdf
-    #file: package://mirror_cube_bot/models/light_mirror_cube_2_by_2.sdf
-    file: package://mirror_cube_bot/models/no_friction_mirror_cube_2_by_2.sdf
+    file: package://mirror_cube_bot/models/light_mirror_cube_2_by_2_v2.sdf
 - add_weld:
     parent: world
     child: mirror_cube::center
@@ -37,13 +36,13 @@ directives:
         rotation: !Rpy { deg: [0, 0, 0] }
 - add_model:
     name: static_corner_block_1
-    file: package://mirror_cube_bot/models/static_corner_block_1.sdf
+    file: package://mirror_cube_bot/models/static_corner_block_1_v2.sdf
 - add_model:
     name: static_corner_block_2
-    file: package://mirror_cube_bot/models/static_corner_block_2.sdf
+    file: package://mirror_cube_bot/models/static_corner_block_2_v2.sdf
 - add_model:
     name: static_corner_block_3
-    file: package://mirror_cube_bot/models/static_corner_block_3.sdf
+    file: package://mirror_cube_bot/models/static_corner_block_3_v2.sdf
 model_drivers:
     iiwa: !IiwaDriver
       control_mode: position_only

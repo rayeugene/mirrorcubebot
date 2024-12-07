@@ -33,7 +33,7 @@ from solver.geometry import assign_heights, get_grip_position
 pregrasp_distance = 0.07
 gripper_position_offset = np.array([0.0, 0.114, 0.0])
 gripper_rotation_offset = RollPitchYaw(0, np.pi, np.pi).ToRotationMatrix()
-cube_center_position = [0.5, 0.5, 0.25]
+#cube_center_position = [0.54, 0.54, 0.27]
 face_offset_distance = 0.01
 
 def compute_handle_pose(
@@ -71,7 +71,7 @@ def compute_handle_pose(
             angle_start = np.pi / 2
         case 'F' : 
             face_offset  = np.array([-face_offset_distance, 0.0, 0.0])
-            angle_start = np.pi / 2
+            angle_start = 0
 
         case 'R' : 
             face_offset  = np.array([0.0, -face_offset_distance, 0.0])
@@ -112,7 +112,8 @@ def compute_handle_pose(
 def make_gripper_trajectory(initial_pose,
                             rotation,
                             current_state,
-                            cubie_heights):
+                            cubie_heights,
+                            cube_center_position):
     """
     Generates trajectories for a robotic gripper's entry and exit maneuvers.
 
@@ -129,9 +130,9 @@ def make_gripper_trajectory(initial_pose,
             - exit_orientation_traj: Orientation trajectory for the exit phase.
             - exit_position_traj: Position trajectory for the exit phase.
     """
-    pregrasp_pose = InterpolatePoseRotate(-1.0, rotation, current_state, cubie_heights)
-    initial_grasp_pose = InterpolatePoseRotate(0.0, rotation, current_state, cubie_heights)
-    final_grasp_pose = InterpolatePoseRotate(1.0, rotation, current_state, cubie_heights)
+    pregrasp_pose = InterpolatePoseRotate(-1.0, rotation, current_state, cubie_heights, cube_center_position)
+    initial_grasp_pose = InterpolatePoseRotate(0.0, rotation, current_state, cubie_heights, cube_center_position)
+    final_grasp_pose = InterpolatePoseRotate(1.0, rotation, current_state, cubie_heights, cube_center_position)
 
     # Entry orientation trajectory
     entry_orientation_traj = PiecewiseQuaternionSlerp()
@@ -169,7 +170,8 @@ def InterpolatePoseRotate(
         t: float, 
         rotation: str, 
         current_state, 
-        cubie_heights) -> RigidTransform:
+        cubie_heights,
+        cube_center_position) -> RigidTransform:
     """
     Interpolates the pose for opening doors based on the rotation type and time.
 
@@ -223,7 +225,8 @@ def InterpolatePose(t,
                     trajs,
                     current_state, 
                     cubie_heights,
-                    durations
+                    durations,
+                    cube_center_position
                     ):
     entry_duration, grip_duration, rotate_duration, exit_duration = durations
     entry_traj_rotation, entry_traj_translation, exit_traj_rotation, exit_traj_translation = trajs
@@ -239,7 +242,8 @@ def InterpolatePose(t,
         return InterpolatePoseRotate((t - (entry_duration + grip_duration)) / rotate_duration, 
                                      rotation, 
                                      current_state, 
-                                     cubie_heights)
+                                     cubie_heights,
+                                     cube_center_position)
     elif t < entry_duration + grip_duration + rotate_duration + exit_duration:
         return InterpolatePoseExit(t - (entry_duration + grip_duration + rotate_duration) / exit_duration,
                                    exit_traj_rotation,
@@ -351,13 +355,13 @@ def create_q_knots(pose_lst, scenario_file):
         R_WG = X_WG.rotation()
 
         # Position constraint on x and z
-        positional_tolerance = 0.0001
+        positional_tolerance = 0.001
         p_WG_lower = np.array([p_WG[0]-positional_tolerance, p_WG[1]-positional_tolerance, p_WG[2]-positional_tolerance])
         p_WG_upper = np.array([p_WG[0]+positional_tolerance, p_WG[1]+positional_tolerance, p_WG[2]+positional_tolerance])
         AddPositionConstraint(ik, p_WG_lower, p_WG_upper)
 
         # Orientation constraint to ensure pitch alignment towards y-axis
-        theta_bound = np.pi / 1800
+        theta_bound = np.pi / 180
         AddOrientationConstraint(ik, R_WG, bounds=theta_bound)
 
         # Add joint-centering cost to maintain natural joint positions
@@ -376,61 +380,73 @@ def create_q_knots(pose_lst, scenario_file):
     return q_knots
 
 def main():
-    rotation = 'F'
-    #scenario_file = "models/urf.rotation.scenario.dmd.yaml"
-    scenario_file = "models/simple.scenario.dmd.yaml"
+    scenario_file = "models/urf.rotation.scenario.dmd.yaml"
+
+    cube_center_positions = []
+    for i in range (-5, 6, 5):
+        for j in range (-5, 6, 5):
+            for k in range (-5, 6, 5):
+                cube_center_positions.append([0.5 + i/100, 0.5 + j/100, 0.25 + k/100])
 
     meshcat = StartMeshcat()
+    for cube_center_position in cube_center_positions:
+        print(cube_center_position)
+        try: 
+            for rotation in ['U', 'U\'', 'R', 'R\'', 'F\'', 'F']:
+                print(rotation)
 
-    builder, plant, scene_graph, station = setup_manipulation_station(meshcat, scenario_file=scenario_file)
-    context = plant.CreateDefaultContext()
-    gripper = plant.GetBodyByName("body")
-    initial_pose = plant.EvalBodyPoseInWorld(context, gripper)
+                builder, plant, scene_graph, station = setup_manipulation_station(meshcat, scenario_file=scenario_file)
+                context = plant.CreateDefaultContext()
+                gripper = plant.GetBodyByName("body")
+                initial_pose = plant.EvalBodyPoseInWorld(context, gripper)
 
-    pocket_cube = supercube.PocketCube()
-    cubie_heights = assign_heights([0.02, 0.03, 0.02, 0.03, 0.04, 0.04])
-    current_state = pocket_cube.get_state()
+                pocket_cube = supercube.PocketCube()
+                cubie_heights = assign_heights([0.02, 0.03, 0.02, 0.03, 0.04, 0.04])
+                current_state = pocket_cube.get_state()
 
-    trajs = make_gripper_trajectory(initial_pose,
-                                    rotation,
-                                    current_state,
-                                    cubie_heights)
-    entry_duration = 5.0
-    grip_duration = 1.0
-    rotate_duration = 15.0
-    exit_duration = 1.0
-    durations = [entry_duration, grip_duration, rotate_duration, exit_duration]
+                trajs = make_gripper_trajectory(initial_pose,
+                                                rotation,
+                                                current_state,
+                                                cubie_heights,
+                                                cube_center_position)
+                entry_duration = 5.0
+                grip_duration = 1.0
+                rotate_duration = 15.0
+                exit_duration = 1.0
+                durations = [entry_duration, grip_duration, rotate_duration, exit_duration]
 
-    total_duration = sum(durations)
-    interval_count = int(total_duration * 3 + 1)
+                total_duration = sum(durations)
+                interval_count = int(total_duration * 2 + 1)
 
-    t_lst = np.linspace(0, total_duration, interval_count)
-    pose_lst = []
-    for t in t_lst:
-        pose = InterpolatePose(t, 
-                               rotation, 
-                               trajs,
-                               current_state, 
-                               cubie_heights, 
-                               durations)
-        AddMeshcatTriad(meshcat, path=str(t), X_PT = pose, opacity=0.02)
-        pose_lst.append(pose)
+                t_lst = np.linspace(0, total_duration, interval_count)
+                pose_lst = []
+                for t in t_lst:
+                    pose = InterpolatePose(t, 
+                                        rotation, 
+                                        trajs,
+                                        current_state, 
+                                        cubie_heights, 
+                                        durations,
+                                        cube_center_position)
+                    AddMeshcatTriad(meshcat, path=str(t), X_PT = pose, opacity=0.02)
+                    pose_lst.append(pose)
 
-    gripper_t_lst = np.array([0.0, 
-                              entry_duration, 
-                              entry_duration + grip_duration, 
-                              entry_duration + grip_duration + rotate_duration,
-                              entry_duration + grip_duration + rotate_duration + exit_duration])
-    gripper_knots = np.array([0.08, 
-                              0.08, 
-                              0.00, 
-                              0.00,
-                              0.08]).reshape(1, 5)
-    g_traj = PiecewisePolynomial.FirstOrderHold(gripper_t_lst, gripper_knots)
+                gripper_t_lst = np.array([0.0, 
+                                        entry_duration, 
+                                        entry_duration + grip_duration, 
+                                        entry_duration + grip_duration + rotate_duration,
+                                        entry_duration + grip_duration + rotate_duration + exit_duration])
+                gripper_knots = np.array([0.08, 
+                                        0.08, 
+                                        0.00, 
+                                        0.00,
+                                        0.08]).reshape(1, 5)
+                g_traj = PiecewisePolynomial.FirstOrderHold(gripper_t_lst, gripper_knots)
 
-    q_knots = np.array(create_q_knots(pose_lst, scenario_file))
-    q_traj = PiecewisePolynomial.CubicShapePreserving(t_lst, q_knots[:, 0:7].T)
-    simulator= BuildAndSimulateTrajectory(builder, station, q_traj, g_traj, meshcat, total_duration)
+                q_knots = np.array(create_q_knots(pose_lst, scenario_file))
+            print("succeed")
+        except: 
+            print("failed")
 
 if __name__ == "__main__":
     main()

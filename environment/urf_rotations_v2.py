@@ -72,28 +72,33 @@ def compute_handle_pose(
         case 'F' : 
             face_offset  = np.array([-face_offset_distance, 0.0, 0.0])
             angle_start = np.pi / 2
-
         case 'R' : 
             face_offset  = np.array([0.0, -face_offset_distance, 0.0])
             angle_start = np.pi
 
-    angle_end = (angle_start + np.pi/2 if rotation in ['U\'', 'F', 'R'] 
+    # angle_end = (angle_start + np.pi/2 if rotation in ['U\'', 'F', 'R'] 
+    #              else angle_start - np.pi/2)
+    angle_end = (angle_start + np.pi/2 if rotation in ['U\'', 'F\'', 'R'] 
                  else angle_start - np.pi/2)
+    # angle_end = (angle_start + np.pi/4 if rotation in ['U\'', 'F\'', 'R'] 
+    #             else angle_start - np.pi/4)
 
     vertical_offset, horizontal_offset = get_grip_position(current_state, cubie_heights, rotation)
     distance_from_axis = np.sqrt(vertical_offset ** 2 + horizontal_offset ** 2)
 
-    assert (t <= 1) 
-    adjusted_t = max(t,0)
+    adjusted_t = min(max(t,0), 1)
 
     match(rotation_face):
         case 'U' : initial_angle = np.arctan2(vertical_offset, horizontal_offset)
-        case 'F' : initial_angle = np.arctan2(horizontal_offset, -vertical_offset)
+        # case 'F' : initial_angle = np.arctan2(horizontal_offset, -vertical_offset)
+        case 'F' : initial_angle = np.arctan2(vertical_offset, horizontal_offset)
         case 'R' : initial_angle = np.arctan2(horizontal_offset, vertical_offset)
 
     match(rotation):
         case 'U' | 'F\'' | 'R' : angle = initial_angle - adjusted_t * np.pi/2
         case 'U\'' | 'F' | 'R\'' : angle = initial_angle + adjusted_t * np.pi/2
+        # case 'U' | 'F' | 'R' : angle = initial_angle - adjusted_t * np.pi/2
+        # case 'U\'' | 'F\'' | 'R\'' : angle = initial_angle + adjusted_t * np.pi/2
 
     match (rotation_face):
         case 'U' : face_center_position = np.array([distance_from_axis * np.cos(angle), distance_from_axis * np.sin(angle), 0])
@@ -103,7 +108,7 @@ def compute_handle_pose(
     p_Whandle = np.add(np.add(cube_center_position, face_offset), face_center_position)
     theta = angle_start + (angle_end - angle_start) * adjusted_t
 
-    if t < 0:
+    if t < 0 or t > 1:
         pregrasp_offset = np.array([pregrasp_distance * np.sign(x) for x in face_offset])
         p_Whandle += pregrasp_offset
 
@@ -132,6 +137,7 @@ def make_gripper_trajectory(initial_pose,
     pregrasp_pose = InterpolatePoseRotate(-1.0, rotation, current_state, cubie_heights)
     initial_grasp_pose = InterpolatePoseRotate(0.0, rotation, current_state, cubie_heights)
     final_grasp_pose = InterpolatePoseRotate(1.0, rotation, current_state, cubie_heights)
+    postgrasp_pose = InterpolatePoseRotate(2.0, rotation, current_state, cubie_heights)
 
     # Entry orientation trajectory
     entry_orientation_traj = PiecewiseQuaternionSlerp()
@@ -156,10 +162,11 @@ def make_gripper_trajectory(initial_pose,
 
     # Exit position trajectory
     exit_position_traj = PiecewisePolynomial.FirstOrderHold(
-        [0.0, 1.0],
+        [0.0, 0.5, 1.0],
         np.vstack([
             final_grasp_pose.translation(),
-            pregrasp_pose.translation()
+            final_grasp_pose.translation(),
+            postgrasp_pose.translation()
         ]).T,
     )
 
@@ -376,9 +383,10 @@ def create_q_knots(pose_lst, scenario_file):
     return q_knots
 
 def main():
-    rotation = 'F'
+    rotation = 'R'
     #scenario_file = "models/urf.rotation.scenario.dmd.yaml"
     scenario_file = "models/simple.scenario.dmd.yaml"
+    #scenario_file = "models/simple.scenario.v2.dmd.yaml"
 
     meshcat = StartMeshcat()
 
@@ -388,6 +396,7 @@ def main():
     initial_pose = plant.EvalBodyPoseInWorld(context, gripper)
 
     pocket_cube = supercube.PocketCube()
+    #cubie_heights = assign_heights([0.025, 0.03, 0.025, 0.03, 0.035, 0.035])
     cubie_heights = assign_heights([0.02, 0.03, 0.02, 0.03, 0.04, 0.04])
     current_state = pocket_cube.get_state()
 
@@ -397,12 +406,12 @@ def main():
                                     cubie_heights)
     entry_duration = 5.0
     grip_duration = 1.0
-    rotate_duration = 15.0
+    rotate_duration = 5.0
     exit_duration = 1.0
     durations = [entry_duration, grip_duration, rotate_duration, exit_duration]
 
     total_duration = sum(durations)
-    interval_count = int(total_duration * 3 + 1)
+    interval_count = int(total_duration * 2 + 1)
 
     t_lst = np.linspace(0, total_duration, interval_count)
     pose_lst = []
@@ -415,6 +424,9 @@ def main():
                                durations)
         AddMeshcatTriad(meshcat, path=str(t), X_PT = pose, opacity=0.02)
         pose_lst.append(pose)
+        print(t)
+        print(pose.translation())
+        print('\n')
 
     gripper_t_lst = np.array([0.0, 
                               entry_duration, 

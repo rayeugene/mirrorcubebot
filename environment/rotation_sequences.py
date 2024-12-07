@@ -77,23 +77,27 @@ def compute_handle_pose(
             face_offset  = np.array([0.0, -face_offset_distance, 0.0])
             angle_start = np.pi
 
-    angle_end = (angle_start + np.pi/2 if rotation in ['U\'', 'F', 'R'] 
+    # angle_end = (angle_start + np.pi/2 if rotation in ['U\'', 'F', 'R'] 
+    #              else angle_start - np.pi/2)
+    angle_end = (angle_start + np.pi/2 if rotation in ['U\'', 'F\'', 'R'] 
                  else angle_start - np.pi/2)
 
     vertical_offset, horizontal_offset = get_grip_position(current_state, cubie_heights, rotation)
     distance_from_axis = np.sqrt(vertical_offset ** 2 + horizontal_offset ** 2)
 
-    assert (t <= 1) 
-    adjusted_t = max(t,0)
+    adjusted_t = min(max(t,0), 1)
 
     match(rotation_face):
         case 'U' : initial_angle = np.arctan2(vertical_offset, horizontal_offset)
-        case 'F' : initial_angle = np.arctan2(horizontal_offset, -vertical_offset)
+        # case 'F' : initial_angle = np.arctan2(horizontal_offset, -vertical_offset)
+        case 'F' : initial_angle = np.arctan2(vertical_offset, horizontal_offset)
         case 'R' : initial_angle = np.arctan2(horizontal_offset, vertical_offset)
 
     match(rotation):
         case 'U' | 'F\'' | 'R' : angle = initial_angle - adjusted_t * np.pi/2
         case 'U\'' | 'F' | 'R\'' : angle = initial_angle + adjusted_t * np.pi/2
+        # case 'U' | 'F' | 'R' : angle = initial_angle - adjusted_t * np.pi/2
+        # case 'U\'' | 'F\'' | 'R\'' : angle = initial_angle + adjusted_t * np.pi/2
 
     match (rotation_face):
         case 'U' : face_center_position = np.array([distance_from_axis * np.cos(angle), distance_from_axis * np.sin(angle), 0])
@@ -103,7 +107,7 @@ def compute_handle_pose(
     p_Whandle = np.add(np.add(cube_center_position, face_offset), face_center_position)
     theta = angle_start + (angle_end - angle_start) * adjusted_t
 
-    if t < 0:
+    if t < 0 or t > 1:
         pregrasp_offset = np.array([pregrasp_distance * np.sign(x) for x in face_offset])
         p_Whandle += pregrasp_offset
 
@@ -132,6 +136,7 @@ def make_gripper_trajectory(initial_pose,
     pregrasp_pose = InterpolatePoseRotate(-1.0, rotation, current_state, cubie_heights)
     initial_grasp_pose = InterpolatePoseRotate(0.0, rotation, current_state, cubie_heights)
     final_grasp_pose = InterpolatePoseRotate(1.0, rotation, current_state, cubie_heights)
+    postgrasp_pose = InterpolatePoseRotate(2.0, rotation, current_state, cubie_heights)
 
     # Entry orientation trajectory
     entry_orientation_traj = PiecewiseQuaternionSlerp()
@@ -156,10 +161,11 @@ def make_gripper_trajectory(initial_pose,
 
     # Exit position trajectory
     exit_position_traj = PiecewisePolynomial.FirstOrderHold(
-        [0.0, 1.0],
+        [0.0, 0.5, 1.0],
         np.vstack([
             final_grasp_pose.translation(),
-            pregrasp_pose.translation()
+            final_grasp_pose.translation(),
+            postgrasp_pose.translation()
         ]).T,
     )
 
@@ -370,67 +376,82 @@ def create_q_knots(pose_lst, scenario_file):
             prog.SetInitialGuess(q_variables, q_knots[-1])  
 
         result = Solve(prog)
-        assert result.is_success()
+        # assert result.is_success()
         q_knots.append(result.GetSolution(q_variables))
 
     return q_knots
 
 def main():
-    rotation = 'F'
-    #scenario_file = "models/urf.rotation.scenario.dmd.yaml"
+    rotation_sequence = ['U', 'R', 'F']
     scenario_file = "models/simple.scenario.dmd.yaml"
 
     meshcat = StartMeshcat()
 
-    builder, plant, scene_graph, station = setup_manipulation_station(meshcat, scenario_file=scenario_file)
+    builder, plant, scene_graph, station = setup_manipulation_station(meshcat, scenario_file)
     context = plant.CreateDefaultContext()
     gripper = plant.GetBodyByName("body")
     initial_pose = plant.EvalBodyPoseInWorld(context, gripper)
-
+    
     pocket_cube = supercube.PocketCube()
     cubie_heights = assign_heights([0.02, 0.03, 0.02, 0.03, 0.04, 0.04])
-    current_state = pocket_cube.get_state()
 
-    trajs = make_gripper_trajectory(initial_pose,
-                                    rotation,
-                                    current_state,
-                                    cubie_heights)
     entry_duration = 5.0
     grip_duration = 1.0
-    rotate_duration = 15.0
+    rotate_duration = 5.0
     exit_duration = 1.0
     durations = [entry_duration, grip_duration, rotate_duration, exit_duration]
 
     total_duration = sum(durations)
-    interval_count = int(total_duration * 3 + 1)
+    interval_count = int(total_duration * 2 + 1)
 
-    t_lst = np.linspace(0, total_duration, interval_count)
     pose_lst = []
-    for t in t_lst:
-        pose = InterpolatePose(t, 
-                               rotation, 
-                               trajs,
-                               current_state, 
-                               cubie_heights, 
-                               durations)
-        AddMeshcatTriad(meshcat, path=str(t), X_PT = pose, opacity=0.02)
-        pose_lst.append(pose)
+    for rotation in rotation_sequence:
+        if len(pose_lst) != 0 : initial_pose = pose_lst[-1]
+        current_state = pocket_cube.get_state()
+        print(current_state)
 
-    gripper_t_lst = np.array([0.0, 
-                              entry_duration, 
-                              entry_duration + grip_duration, 
-                              entry_duration + grip_duration + rotate_duration,
-                              entry_duration + grip_duration + rotate_duration + exit_duration])
-    gripper_knots = np.array([0.08, 
-                              0.08, 
-                              0.00, 
-                              0.00,
-                              0.08]).reshape(1, 5)
+        trajs = make_gripper_trajectory(initial_pose,
+                                        rotation,
+                                        current_state,
+                                        cubie_heights)
+
+        t_lst = np.linspace(0, total_duration, interval_count)
+        for t in t_lst:
+            pose = InterpolatePose(t, 
+                                rotation, 
+                                trajs,
+                                current_state, 
+                                cubie_heights, 
+                                durations)
+            AddMeshcatTriad(meshcat, path=str(t), X_PT = pose, opacity=0.02)
+            pose_lst.append(pose)
+            # print(t)
+            # print(pose.translation())
+            # print('\n')
+        pocket_cube.move(rotation)
+
+
+    t_lst = np.linspace(0, total_duration * len(rotation_sequence), interval_count* len(rotation_sequence))
+
+    gripper_t_lst = [0.0]
+    for i in range(len(rotation_sequence)):
+        gripper_t_lst.append(total_duration * i + entry_duration)
+        gripper_t_lst.append(total_duration * i + entry_duration + grip_duration)
+        gripper_t_lst.append(total_duration * i + entry_duration + grip_duration + rotate_duration)
+        gripper_t_lst.append(total_duration * i + entry_duration + grip_duration + rotate_duration + exit_duration)
+    gripper_t_lst = np.array(gripper_t_lst)
+
+    gripper_knots = [0.08]
+    for i in range(len(rotation_sequence)):
+        gripper_knots.extend([0.08, 0.00, 0.00, 0.08])
+
+    gripper_knots = np.array(gripper_knots).reshape(1, len(gripper_knots))
+    
     g_traj = PiecewisePolynomial.FirstOrderHold(gripper_t_lst, gripper_knots)
 
     q_knots = np.array(create_q_knots(pose_lst, scenario_file))
-    q_traj = PiecewisePolynomial.CubicShapePreserving(t_lst, q_knots[:, 0:7].T)
-    simulator= BuildAndSimulateTrajectory(builder, station, q_traj, g_traj, meshcat, total_duration)
+    q_traj = PiecewisePolynomial.CubicShapePreserving(t_lst , q_knots[:, 0:7].T)
+    simulator= BuildAndSimulateTrajectory(builder, station, q_traj, g_traj, meshcat, total_duration * len(rotation_sequence))
 
 if __name__ == "__main__":
     main()

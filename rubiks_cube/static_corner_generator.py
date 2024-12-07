@@ -148,29 +148,76 @@ class BlockGenerator:
 #     file_out = "models/static_corner_block_3.sdf" 
 # )
 
-# Example usage
-BlockGenerator.generate_static_corner_block(
-    edge_length=0.02,  # 1 cm block
-    corner_position=np.array([0.53, 0.52, 0.20]),  # Position adjacent to the cube
-    mass_density=390,  # Adjust as needed
-    solid_color={"name": "white", "rgba": np.array([0, 0, 0, 1])},
-    file_out = "models/static_corner_block_1.sdf" 
-)
+# # Example usage
+# BlockGenerator.generate_static_corner_block(
+#     edge_length=0.02,  # 1 cm block
+#     corner_position=np.array([0.53, 0.52, 0.20]),  # Position adjacent to the cube
+#     mass_density=390,  # Adjust as needed
+#     solid_color={"name": "white", "rgba": np.array([0, 0, 0, 1])},
+#     file_out = "models/static_corner_block_1.sdf" 
+# )
 
-# Example usage
-BlockGenerator.generate_static_corner_block(
-    edge_length=0.02,  # 1 cm block
-    corner_position=np.array([0.55, 0.52, 0.22]),  # Position adjacent to the cube
-    mass_density=390,  # Adjust as needed
-    solid_color={"name": "white", "rgba": np.array([0, 0, 0, 1])},
-    file_out = "models/static_corner_block_2.sdf" 
-)
+# # Example usage
+# BlockGenerator.generate_static_corner_block(
+#     edge_length=0.02,  # 1 cm block
+#     corner_position=np.array([0.55, 0.52, 0.22]),  # Position adjacent to the cube
+#     mass_density=390,  # Adjust as needed
+#     solid_color={"name": "white", "rgba": np.array([0, 0, 0, 1])},
+#     file_out = "models/static_corner_block_2.sdf" 
+# )
 
-# Example usage
-BlockGenerator.generate_static_corner_block(
-    edge_length=0.02,  # 1 cm block
-    corner_position=np.array([0.53, 0.54, 0.22]),  # Position adjacent to the cube
-    mass_density=390,  # Adjust as needed
-    solid_color={"name": "white", "rgba": np.array([0, 0, 0, 1])},
-    file_out = "models/static_corner_block_3.sdf" 
-)
+# # Example usage
+# BlockGenerator.generate_static_corner_block(
+#     edge_length=0.02,  # 1 cm block
+#     corner_position=np.array([0.53, 0.54, 0.22]),  # Position adjacent to the cube
+#     mass_density=390,  # Adjust as needed
+#     solid_color={"name": "white", "rgba": np.array([0, 0, 0, 1])},
+#     file_out = "models/static_corner_block_3.sdf" 
+# )
+
+edge_length = 0.02
+cube_center_position = np.array([0.50, 0.50, 0.25])
+cubie_offset = np.array([0.035, 0.03, -0.035])
+for i in range(3):
+    block_offset = [- edge_length/2 * np.sign(x) for x in cubie_offset]
+    block_offset[i] = -block_offset[i]
+    position = np.add(np.add(cube_center_position, cubie_offset), np.array(block_offset))
+
+    BlockGenerator.generate_static_corner_block(
+        edge_length=edge_length, 
+        corner_position= position,
+        mass_density= 390,  # Adjust as needed
+        solid_color={"name": "white", "rgba": np.array([0, 0, 0, 1])},
+        file_out = "models/static_corner_block_" + str(i+1) + "_v2.sdf" 
+    )
+
+
+# # Example usage
+# BlockGenerator.generate_static_corner_block(
+#     edge_length=0.02,  # 1 cm block
+#     [0.50, 0.50, 0.25] + [0.04, 0.03, -0.04] + [-0.01, -0.01, -0.01]
+#     corner_position=np.array([0.53, 0.52, 0.20]),  # Position adjacent to the cube
+#     mass_density=390,  # Adjust as needed
+#     solid_color={"name": "white", "rgba": np.array([0, 0, 0, 1])},
+#     file_out = "models/static_corner_block_1.sdf" 
+# )
+
+# # Example usage
+# BlockGenerator.generate_static_corner_block(
+#     edge_length=0.02,  # 1 cm block
+#     [0.50, 0.50, 0.25] + [0.04, 0.03, -0.04] + [+0.01, -0.01, +0.01]
+#     corner_position=np.array([0.55, 0.52, 0.22]),  # Position adjacent to the cube
+#     mass_density=390,  # Adjust as needed
+#     solid_color={"name": "white", "rgba": np.array([0, 0, 0, 1])},
+#     file_out = "models/static_corner_block_2.sdf" 
+# )
+
+# # Example usage
+# BlockGenerator.generate_static_corner_block(
+#     edge_length=0.02,  # 1 cm block
+#     [0.50, 0.50, 0.25] + [0.04, 0.03, -0.04] + [-0.01, +0.01, +0.01]
+#     corner_position=np.array([0.53, 0.54, 0.22]),  # Position adjacent to the cube
+#     mass_density=390,  # Adjust as needed
+#     solid_color={"name": "white", "rgba": np.array([0, 0, 0, 1])},
+#     file_out = "models/static_corner_block_3.sdf" 
+# )
