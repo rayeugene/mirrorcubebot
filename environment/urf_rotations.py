@@ -131,6 +131,7 @@ def make_gripper_trajectory(initial_pose,
     initial_grasp_pose = InterpolatePoseRotate(0.0, rotation, current_state, cubie_heights)
     final_grasp_pose = InterpolatePoseRotate(1.0, rotation, current_state, cubie_heights)
     postgrasp_pose = InterpolatePoseRotate(2.0, rotation, current_state, cubie_heights)
+    ready_pose = ReadyPose()
 
     # Entry orientation trajectory
     entry_orientation_traj = PiecewiseQuaternionSlerp()
@@ -151,15 +152,17 @@ def make_gripper_trajectory(initial_pose,
     # Exit orientation trajectory
     exit_orientation_traj = PiecewiseQuaternionSlerp()
     exit_orientation_traj.Append(0.0, final_grasp_pose.rotation())
-    exit_orientation_traj.Append(1.0, final_grasp_pose.rotation())
+    exit_orientation_traj.Append(0.5, final_grasp_pose.rotation())
+    exit_orientation_traj.Append(1.0, ready_pose.rotation())
 
     # Exit position trajectory
     exit_position_traj = PiecewisePolynomial.FirstOrderHold(
-        [0.0, 0.5, 1.0],
+        [0.0, 0.1, 0.5, 1.0],
         np.vstack([
             final_grasp_pose.translation(),
             final_grasp_pose.translation(),
-            postgrasp_pose.translation()
+            postgrasp_pose.translation(),
+            ready_pose.translation()
         ]).T,
     )
 
@@ -218,6 +221,19 @@ def InterpolatePoseExit(t, exit_traj_rotation, exit_traj_translation):
         exit_traj_translation.value(t),
     )
 
+def ReadyPose():
+    R_Whandle = RollPitchYaw(np.pi / 2, 0, np.pi/2).ToRotationMatrix()
+    p_Whandle = [0.35, 0.35, 0.35]
+
+    X_Whandle = RigidTransform(R_Whandle, p_Whandle)
+
+    # Add a gripper offset
+    p_handleG = gripper_position_offset
+    R_handleG = gripper_rotation_offset
+    X_handleG = RigidTransform(R_handleG, p_handleG)
+
+    return X_Whandle.multiply(X_handleG)
+
 def InterpolatePose(t, 
                     rotation, 
                     trajs,
@@ -241,7 +257,7 @@ def InterpolatePose(t,
                                      current_state, 
                                      cubie_heights)
     elif t < entry_duration + grip_duration + rotate_duration + exit_duration:
-        return InterpolatePoseExit(t - (entry_duration + grip_duration + rotate_duration) / exit_duration,
+        return InterpolatePoseExit((t - (entry_duration + grip_duration + rotate_duration)) / exit_duration,
                                    exit_traj_rotation,
                                    exit_traj_translation)
     else: 

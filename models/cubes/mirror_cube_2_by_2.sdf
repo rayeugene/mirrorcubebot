@@ -3,7 +3,7 @@
 	<model name="mirror_cube_2x2">
 		<link name="center"/>
 		<link name="cubie_0_0_0">
-			<pose>-0.0102 -0.0152 -0.0202 0.0 0.0 0.0</pose>
+			<pose>-0.01025 -0.01525 -0.02025 0.0 0.0 0.0</pose>
 			<inertial>
 				<mass>0.009359999999999999</mass>
 				<inertia>
@@ -24,8 +24,8 @@
 				<surface>
 					<friction>
 						<ode>
-							<mu>0</mu>
-							<mu2>0</mu2>
+							<mu>0.5</mu>
+							<mu2>0.5</mu2>
 						</ode>
 					</friction>
 				</surface>
@@ -75,7 +75,7 @@
 			</visual>
 		</link>
 		<joint name="ball_0_0_0" type="ball">
-			<pose>0.0102 0.0152 0.0202 -0.0 -0.0 -0.0</pose>
+			<pose>0.01025 0.01525 0.02025 -0.0 -0.0 -0.0</pose>
 			<parent>center</parent>
 			<child>cubie_0_0_0</child>
 			<axis>
@@ -88,7 +88,7 @@
 			</axis>
 		</joint>
 		<link name="cubie_0_0_1">
-			<pose>-0.0102 -0.0152 0.010199999999999999 0.0 0.0 0.0</pose>
+			<pose>-0.01025 -0.01525 0.010249999999999999 0.0 0.0 0.0</pose>
 			<inertial>
 				<mass>0.004679999999999998</mass>
 				<inertia>
@@ -109,8 +109,8 @@
 				<surface>
 					<friction>
 						<ode>
-							<mu>0</mu>
-							<mu2>0</mu2>
+							<mu>0.5</mu>
+							<mu2>0.5</mu2>
 						</ode>
 					</friction>
 				</surface>
@@ -160,7 +160,7 @@
 			</visual>
 		</link>
 		<joint name="ball_0_0_1" type="ball">
-			<pose>0.0102 0.0152 -0.010199999999999999 -0.0 -0.0 -0.0</pose>
+			<pose>0.01025 0.01525 -0.010249999999999999 -0.0 -0.0 -0.0</pose>
 			<parent>center</parent>
 			<child>cubie_0_0_1</child>
 			<axis>
@@ -173,7 +173,7 @@
 			</axis>
 		</joint>
 		<link name="cubie_0_1_0">
-			<pose>-0.0102 0.0152 -0.0202 0.0 0.0 0.0</pose>
+			<pose>-0.01025 0.01525 -0.02025 0.0 0.0 0.0</pose>
 			<inertial>
 				<mass>0.009359999999999999</mass>
 				<inertia>
@@ -194,8 +194,8 @@
 				<surface>
 					<friction>
 						<ode>
-							<mu>0</mu>
-							<mu2>0</mu2>
+							<mu>0.5</mu>
+							<mu2>0.5</mu2>
 						</ode>
 					</friction>
 				</surface>
@@ -245,7 +245,7 @@
 			</visual>
 		</link>
 		<joint name="ball_0_1_0" type="ball">
-			<pose>0.0102 -0.0152 0.0202 -0.0 -0.0 -0.0</pose>
+			<pose>0.01025 -0.01525 0.02025 -0.0 -0.0 -0.0</pose>
 			<parent>center</parent>
 			<child>cubie_0_1_0</child>
 			<axis>
@@ -258,7 +258,7 @@
 			</axis>
 		</joint>
 		<link name="cubie_0_1_1">
-			<pose>-0.0102 0.0152 0.010199999999999999 0.0 0.0 0.0</pose>
+			<pose>-0.01025 0.01525 0.010249999999999999 0.0 0.0 0.0</pose>
 			<inertial>
 				<mass>0.004679999999999998</mass>
 				<inertia>
@@ -279,8 +279,8 @@
 				<surface>
 					<friction>
 						<ode>
-							<mu>0</mu>
-							<mu2>0</mu2>
+							<mu>0.5</mu>
+							<mu2>0.5</mu2>
 						</ode>
 					</friction>
 				</surface>
@@ -330,7 +330,7 @@
 			</visual>
 		</link>
 		<joint name="ball_0_1_1" type="ball">
-			<pose>0.0102 -0.0152 -0.010199999999999999 -0.0 -0.0 -0.0</pose>
+			<pose>0.01025 -0.01525 -0.010249999999999999 -0.0 -0.0 -0.0</pose>
 			<parent>center</parent>
 			<child>cubie_0_1_1</child>
 			<axis>
@@ -343,7 +343,7 @@
 			</axis>
 		</joint>
 		<link name="cubie_1_0_0">
-			<pose>0.020199999999999996 -0.0152 -0.0202 0.0 0.0 0.0</pose>
+			<pose>0.020249999999999997 -0.01525 -0.02025 0.0 0.0 0.0</pose>
 			<inertial>
 				<mass>0.018719999999999994</mass>
 				<inertia>
@@ -364,8 +364,8 @@
 				<surface>
 					<friction>
 						<ode>
-							<mu>0</mu>
-							<mu2>0</mu2>
+							<mu>0.5</mu>
+							<mu2>0.5</mu2>
 						</ode>
 					</friction>
 				</surface>
@@ -415,7 +415,7 @@
 			</visual>
 		</link>
 		<joint name="ball_1_0_0" type="ball">
-			<pose>-0.020199999999999996 0.0152 0.0202 -0.0 -0.0 -0.0</pose>
+			<pose>-0.020249999999999997 0.01525 0.02025 -0.0 -0.0 -0.0</pose>
 			<parent>center</parent>
 			<child>cubie_1_0_0</child>
 			<axis>
@@ -428,7 +428,7 @@
 			</axis>
 		</joint>
 		<link name="cubie_1_0_1">
-			<pose>0.020199999999999996 -0.0152 0.010199999999999999 0.0 0.0 0.0</pose>
+			<pose>0.020249999999999997 -0.01525 0.010249999999999999 0.0 0.0 0.0</pose>
 			<inertial>
 				<mass>0.009359999999999997</mass>
 				<inertia>
@@ -449,8 +449,8 @@
 				<surface>
 					<friction>
 						<ode>
-							<mu>0</mu>
-							<mu2>0</mu2>
+							<mu>0.5</mu>
+							<mu2>0.5</mu2>
 						</ode>
 					</friction>
 				</surface>
@@ -500,7 +500,7 @@
 			</visual>
 		</link>
 		<joint name="ball_1_0_1" type="ball">
-			<pose>-0.020199999999999996 0.0152 -0.010199999999999999 -0.0 -0.0 -0.0</pose>
+			<pose>-0.020249999999999997 0.01525 -0.010249999999999999 -0.0 -0.0 -0.0</pose>
 			<parent>center</parent>
 			<child>cubie_1_0_1</child>
 			<axis>
@@ -513,7 +513,7 @@
 			</axis>
 		</joint>
 		<link name="cubie_1_1_0">
-			<pose>0.020199999999999996 0.0152 -0.0202 0.0 0.0 0.0</pose>
+			<pose>0.020249999999999997 0.01525 -0.02025 0.0 0.0 0.0</pose>
 			<inertial>
 				<mass>0.018719999999999994</mass>
 				<inertia>
@@ -534,8 +534,8 @@
 				<surface>
 					<friction>
 						<ode>
-							<mu>0</mu>
-							<mu2>0</mu2>
+							<mu>0.5</mu>
+							<mu2>0.5</mu2>
 						</ode>
 					</friction>
 				</surface>
@@ -585,7 +585,7 @@
 			</visual>
 		</link>
 		<joint name="ball_1_1_0" type="ball">
-			<pose>-0.020199999999999996 -0.0152 0.0202 -0.0 -0.0 -0.0</pose>
+			<pose>-0.020249999999999997 -0.01525 0.02025 -0.0 -0.0 -0.0</pose>
 			<parent>center</parent>
 			<child>cubie_1_1_0</child>
 			<axis>
@@ -598,7 +598,7 @@
 			</axis>
 		</joint>
 		<link name="cubie_1_1_1">
-			<pose>0.020199999999999996 0.0152 0.010199999999999999 0.0 0.0 0.0</pose>
+			<pose>0.020249999999999997 0.01525 0.010249999999999999 0.0 0.0 0.0</pose>
 			<inertial>
 				<mass>0.009359999999999997</mass>
 				<inertia>
@@ -619,8 +619,8 @@
 				<surface>
 					<friction>
 						<ode>
-							<mu>0</mu>
-							<mu2>0</mu2>
+							<mu>0.5</mu>
+							<mu2>0.5</mu2>
 						</ode>
 					</friction>
 				</surface>
@@ -670,7 +670,7 @@
 			</visual>
 		</link>
 		<joint name="ball_1_1_1" type="ball">
-			<pose>-0.020199999999999996 -0.0152 -0.010199999999999999 -0.0 -0.0 -0.0</pose>
+			<pose>-0.020249999999999997 -0.01525 -0.010249999999999999 -0.0 -0.0 -0.0</pose>
 			<parent>center</parent>
 			<child>cubie_1_1_1</child>
 			<axis>
