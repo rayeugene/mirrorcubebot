@@ -24,7 +24,7 @@ directives:
         rotation: !Rpy { deg: [90, 0, 90]}
 - add_model:
     name: mirror_cube
-    file: package://mirror_cube_bot/models/cubes/mirror_cube_2_by_2.sdf
+    file: package://mirror_cube_bot/models/friction_and_spacing/mirror_cube_f_2_s_2.sdf
 - add_weld:
     parent: world
     child: mirror_cube::center
