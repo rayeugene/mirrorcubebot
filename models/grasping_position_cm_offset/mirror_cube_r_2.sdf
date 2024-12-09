@@ -3,22 +3,22 @@
 	<model name="mirror_cube_2x2">
 		<link name="center"/>
 		<link name="cubie_0_0_0">
-			<pose>-0.14254999999999998 -0.15005 -0.15755 0.0 0.0 0.0</pose>
+			<pose>-0.007549999999999999 -0.01505 -0.02255 0.0 0.0 0.0</pose>
 			<inertial>
-				<mass>10.503675</mass>
+				<mass>0.007897499999999998</mass>
 				<inertia>
-					<ixx>0.16562982515625</ixx>
+					<ixx>1.925015624999999e-06</ixx>
 					<ixy>0.0</ixy>
 					<ixz>0.0</ixz>
-					<iyy>0.15794901281249998</iyy>
+					<iyy>1.4807812499999996e-06</iyy>
 					<iyz>0.0</iyz>
-					<izz>0.14987431265624998</izz>
+					<izz>7.403906249999998e-07</izz>
 				</inertia>
 			</inertial>
 			<collision name="collision">
 				<geometry>
 					<box>
-						<size>0.285 0.3 0.315</size>
+						<size>0.015 0.03 0.045</size>
 					</box>
 				</geometry>
 				<surface>
@@ -33,7 +33,7 @@
 			<visual name="black">
 				<geometry>
 					<box>
-						<size>0.285 0.3 0.315</size>
+						<size>0.015 0.03 0.045</size>
 					</box>
 				</geometry>
 				<material>
@@ -41,10 +41,10 @@
 				</material>
 			</visual>
 			<visual name="red">
-				<pose>-0.1425 0.0 0.0 0.0 0.0 0.0</pose>
+				<pose>-0.0075 0.0 0.0 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.0028 0.295 0.31</size>
+						<size>0.0001 0.025 0.04</size>
 					</box>
 				</geometry>
 				<material>
@@ -52,10 +52,10 @@
 				</material>
 			</visual>
 			<visual name="green">
-				<pose>0.0 -0.15 0.0 0.0 0.0 0.0</pose>
+				<pose>0.0 -0.015 0.0 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.28 0.00295 0.31</size>
+						<size>0.01 0.00025 0.04</size>
 					</box>
 				</geometry>
 				<material>
@@ -63,10 +63,10 @@
 				</material>
 			</visual>
 			<visual name="white">
-				<pose>0.0 0.0 -0.1575 0.0 0.0 0.0</pose>
+				<pose>0.0 0.0 -0.0225 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.28 0.295 0.0031</size>
+						<size>0.01 0.025 0.0004</size>
 					</box>
 				</geometry>
 				<material>
@@ -75,7 +75,7 @@
 			</visual>
 		</link>
 		<joint name="ball_0_0_0" type="ball">
-			<pose>0.14254999999999998 0.15005 0.15755 -0.0 -0.0 -0.0</pose>
+			<pose>0.007549999999999999 0.01505 0.02255 -0.0 -0.0 -0.0</pose>
 			<parent>center</parent>
 			<child>cubie_0_0_0</child>
 			<axis>
@@ -88,22 +88,22 @@
 			</axis>
 		</joint>
 		<link name="cubie_0_0_1">
-			<pose>-0.14254999999999998 -0.15005 0.14254999999999998 0.0 0.0 0.0</pose>
+			<pose>-0.007549999999999999 -0.01505 0.007549999999999999 0.0 0.0 0.0</pose>
 			<inertial>
-				<mass>9.503324999999998</mass>
+				<mass>0.0026325</mass>
 				<inertia>
-					<ixx>0.13560056859374997</ixx>
+					<ixx>2.4679687499999995e-07</ixx>
 					<ixy>0.0</ixy>
 					<ixz>0.0</ixz>
-					<iyy>0.12865126218749995</iyy>
+					<iyy>9.871874999999999e-08</iyy>
 					<iyz>0.0</iyz>
-					<izz>0.13560056859374997</izz>
+					<izz>2.4679687499999995e-07</izz>
 				</inertia>
 			</inertial>
 			<collision name="collision">
 				<geometry>
 					<box>
-						<size>0.285 0.3 0.285</size>
+						<size>0.015 0.03 0.015</size>
 					</box>
 				</geometry>
 				<surface>
@@ -118,7 +118,7 @@
 			<visual name="black">
 				<geometry>
 					<box>
-						<size>0.285 0.3 0.285</size>
+						<size>0.015 0.03 0.015</size>
 					</box>
 				</geometry>
 				<material>
@@ -126,10 +126,10 @@
 				</material>
 			</visual>
 			<visual name="red">
-				<pose>-0.1425 0.0 0.0 0.0 0.0 0.0</pose>
+				<pose>-0.0075 0.0 0.0 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.0028 0.295 0.28</size>
+						<size>0.0001 0.025 0.01</size>
 					</box>
 				</geometry>
 				<material>
@@ -137,10 +137,10 @@
 				</material>
 			</visual>
 			<visual name="green">
-				<pose>0.0 -0.15 0.0 0.0 0.0 0.0</pose>
+				<pose>0.0 -0.015 0.0 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.28 0.00295 0.28</size>
+						<size>0.01 0.00025 0.01</size>
 					</box>
 				</geometry>
 				<material>
@@ -148,10 +148,10 @@
 				</material>
 			</visual>
 			<visual name="yellow">
-				<pose>0.0 0.0 0.1425 0.0 0.0 0.0</pose>
+				<pose>0.0 0.0 0.0075 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.28 0.295 0.0028</size>
+						<size>0.01 0.025 0.0001</size>
 					</box>
 				</geometry>
 				<material>
@@ -160,7 +160,7 @@
 			</visual>
 		</link>
 		<joint name="ball_0_0_1" type="ball">
-			<pose>0.14254999999999998 0.15005 -0.14254999999999998 -0.0 -0.0 -0.0</pose>
+			<pose>0.007549999999999999 0.01505 -0.007549999999999999 -0.0 -0.0 -0.0</pose>
 			<parent>center</parent>
 			<child>cubie_0_0_1</child>
 			<axis>
@@ -173,22 +173,22 @@
 			</axis>
 		</joint>
 		<link name="cubie_0_1_0">
-			<pose>-0.14254999999999998 0.15005 -0.15755 0.0 0.0 0.0</pose>
+			<pose>-0.007549999999999999 0.01505 -0.02255 0.0 0.0 0.0</pose>
 			<inertial>
-				<mass>10.503675</mass>
+				<mass>0.007897499999999998</mass>
 				<inertia>
-					<ixx>0.16562982515625</ixx>
+					<ixx>1.925015624999999e-06</ixx>
 					<ixy>0.0</ixy>
 					<ixz>0.0</ixz>
-					<iyy>0.15794901281249998</iyy>
+					<iyy>1.4807812499999996e-06</iyy>
 					<iyz>0.0</iyz>
-					<izz>0.14987431265624998</izz>
+					<izz>7.403906249999998e-07</izz>
 				</inertia>
 			</inertial>
 			<collision name="collision">
 				<geometry>
 					<box>
-						<size>0.285 0.3 0.315</size>
+						<size>0.015 0.03 0.045</size>
 					</box>
 				</geometry>
 				<surface>
@@ -203,7 +203,7 @@
 			<visual name="black">
 				<geometry>
 					<box>
-						<size>0.285 0.3 0.315</size>
+						<size>0.015 0.03 0.045</size>
 					</box>
 				</geometry>
 				<material>
@@ -211,10 +211,10 @@
 				</material>
 			</visual>
 			<visual name="red">
-				<pose>-0.1425 0.0 0.0 0.0 0.0 0.0</pose>
+				<pose>-0.0075 0.0 0.0 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.0028 0.295 0.31</size>
+						<size>0.0001 0.025 0.04</size>
 					</box>
 				</geometry>
 				<material>
@@ -222,10 +222,10 @@
 				</material>
 			</visual>
 			<visual name="blue">
-				<pose>0.0 0.15 0.0 0.0 0.0 0.0</pose>
+				<pose>0.0 0.015 0.0 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.28 0.00295 0.31</size>
+						<size>0.01 0.00025 0.04</size>
 					</box>
 				</geometry>
 				<material>
@@ -233,10 +233,10 @@
 				</material>
 			</visual>
 			<visual name="white">
-				<pose>0.0 0.0 -0.1575 0.0 0.0 0.0</pose>
+				<pose>0.0 0.0 -0.0225 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.28 0.295 0.0031</size>
+						<size>0.01 0.025 0.0004</size>
 					</box>
 				</geometry>
 				<material>
@@ -245,7 +245,7 @@
 			</visual>
 		</link>
 		<joint name="ball_0_1_0" type="ball">
-			<pose>0.14254999999999998 -0.15005 0.15755 -0.0 -0.0 -0.0</pose>
+			<pose>0.007549999999999999 -0.01505 0.02255 -0.0 -0.0 -0.0</pose>
 			<parent>center</parent>
 			<child>cubie_0_1_0</child>
 			<axis>
@@ -258,22 +258,22 @@
 			</axis>
 		</joint>
 		<link name="cubie_0_1_1">
-			<pose>-0.14254999999999998 0.15005 0.14254999999999998 0.0 0.0 0.0</pose>
+			<pose>-0.007549999999999999 0.01505 0.007549999999999999 0.0 0.0 0.0</pose>
 			<inertial>
-				<mass>9.503324999999998</mass>
+				<mass>0.0026325</mass>
 				<inertia>
-					<ixx>0.13560056859374997</ixx>
+					<ixx>2.4679687499999995e-07</ixx>
 					<ixy>0.0</ixy>
 					<ixz>0.0</ixz>
-					<iyy>0.12865126218749995</iyy>
+					<iyy>9.871874999999999e-08</iyy>
 					<iyz>0.0</iyz>
-					<izz>0.13560056859374997</izz>
+					<izz>2.4679687499999995e-07</izz>
 				</inertia>
 			</inertial>
 			<collision name="collision">
 				<geometry>
 					<box>
-						<size>0.285 0.3 0.285</size>
+						<size>0.015 0.03 0.015</size>
 					</box>
 				</geometry>
 				<surface>
@@ -288,7 +288,7 @@
 			<visual name="black">
 				<geometry>
 					<box>
-						<size>0.285 0.3 0.285</size>
+						<size>0.015 0.03 0.015</size>
 					</box>
 				</geometry>
 				<material>
@@ -296,10 +296,10 @@
 				</material>
 			</visual>
 			<visual name="red">
-				<pose>-0.1425 0.0 0.0 0.0 0.0 0.0</pose>
+				<pose>-0.0075 0.0 0.0 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.0028 0.295 0.28</size>
+						<size>0.0001 0.025 0.01</size>
 					</box>
 				</geometry>
 				<material>
@@ -307,10 +307,10 @@
 				</material>
 			</visual>
 			<visual name="blue">
-				<pose>0.0 0.15 0.0 0.0 0.0 0.0</pose>
+				<pose>0.0 0.015 0.0 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.28 0.00295 0.28</size>
+						<size>0.01 0.00025 0.01</size>
 					</box>
 				</geometry>
 				<material>
@@ -318,10 +318,10 @@
 				</material>
 			</visual>
 			<visual name="yellow">
-				<pose>0.0 0.0 0.1425 0.0 0.0 0.0</pose>
+				<pose>0.0 0.0 0.0075 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.28 0.295 0.0028</size>
+						<size>0.01 0.025 0.0001</size>
 					</box>
 				</geometry>
 				<material>
@@ -330,7 +330,7 @@
 			</visual>
 		</link>
 		<joint name="ball_0_1_1" type="ball">
-			<pose>0.14254999999999998 -0.15005 -0.14254999999999998 -0.0 -0.0 -0.0</pose>
+			<pose>0.007549999999999999 -0.01505 -0.007549999999999999 -0.0 -0.0 -0.0</pose>
 			<parent>center</parent>
 			<child>cubie_0_1_1</child>
 			<axis>
@@ -343,22 +343,22 @@
 			</axis>
 		</joint>
 		<link name="cubie_1_0_0">
-			<pose>0.15755 -0.15005 -0.15755 0.0 0.0 0.0</pose>
+			<pose>0.02255 -0.01505 -0.02255 0.0 0.0 0.0</pose>
 			<inertial>
-				<mass>11.609325</mass>
+				<mass>0.0236925</mass>
 				<inertia>
-					<ixx>0.18306454359375002</ixx>
+					<ixx>5.775046875e-06</ixx>
 					<ixy>0.0</ixy>
 					<ixz>0.0</ixz>
-					<iyy>0.19198921218750004</iyy>
+					<iyy>7.99621875e-06</iyy>
 					<iyz>0.0</iyz>
-					<izz>0.18306454359375002</izz>
+					<izz>5.775046875e-06</izz>
 				</inertia>
 			</inertial>
 			<collision name="collision">
 				<geometry>
 					<box>
-						<size>0.315 0.3 0.315</size>
+						<size>0.045 0.03 0.045</size>
 					</box>
 				</geometry>
 				<surface>
@@ -373,7 +373,7 @@
 			<visual name="black">
 				<geometry>
 					<box>
-						<size>0.315 0.3 0.315</size>
+						<size>0.045 0.03 0.045</size>
 					</box>
 				</geometry>
 				<material>
@@ -381,10 +381,10 @@
 				</material>
 			</visual>
 			<visual name="orange">
-				<pose>0.1575 0.0 0.0 0.0 0.0 0.0</pose>
+				<pose>0.0225 0.0 0.0 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.0031 0.295 0.31</size>
+						<size>0.0004 0.025 0.04</size>
 					</box>
 				</geometry>
 				<material>
@@ -392,10 +392,10 @@
 				</material>
 			</visual>
 			<visual name="green">
-				<pose>0.0 -0.15 0.0 0.0 0.0 0.0</pose>
+				<pose>0.0 -0.015 0.0 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.31 0.00295 0.31</size>
+						<size>0.04 0.00025 0.04</size>
 					</box>
 				</geometry>
 				<material>
@@ -403,10 +403,10 @@
 				</material>
 			</visual>
 			<visual name="white">
-				<pose>0.0 0.0 -0.1575 0.0 0.0 0.0</pose>
+				<pose>0.0 0.0 -0.0225 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.31 0.295 0.0031</size>
+						<size>0.04 0.025 0.0004</size>
 					</box>
 				</geometry>
 				<material>
@@ -415,7 +415,7 @@
 			</visual>
 		</link>
 		<joint name="ball_1_0_0" type="ball">
-			<pose>-0.15755 0.15005 0.15755 -0.0 -0.0 -0.0</pose>
+			<pose>-0.02255 0.01505 0.02255 -0.0 -0.0 -0.0</pose>
 			<parent>center</parent>
 			<child>cubie_1_0_0</child>
 			<axis>
@@ -428,22 +428,22 @@
 			</axis>
 		</joint>
 		<link name="cubie_1_0_1">
-			<pose>0.15755 -0.15005 0.14254999999999998 0.0 0.0 0.0</pose>
+			<pose>0.02255 -0.01505 0.007549999999999999 0.0 0.0 0.0</pose>
 			<inertial>
-				<mass>10.503675</mass>
+				<mass>0.007897499999999998</mass>
 				<inertia>
-					<ixx>0.14987431265624998</ixx>
+					<ixx>7.403906249999998e-07</ixx>
 					<ixy>0.0</ixy>
 					<ixz>0.0</ixz>
-					<iyy>0.15794901281249998</iyy>
+					<iyy>1.4807812499999996e-06</iyy>
 					<iyz>0.0</iyz>
-					<izz>0.16562982515625</izz>
+					<izz>1.925015624999999e-06</izz>
 				</inertia>
 			</inertial>
 			<collision name="collision">
 				<geometry>
 					<box>
-						<size>0.315 0.3 0.285</size>
+						<size>0.045 0.03 0.015</size>
 					</box>
 				</geometry>
 				<surface>
@@ -458,7 +458,7 @@
 			<visual name="black">
 				<geometry>
 					<box>
-						<size>0.315 0.3 0.285</size>
+						<size>0.045 0.03 0.015</size>
 					</box>
 				</geometry>
 				<material>
@@ -466,10 +466,10 @@
 				</material>
 			</visual>
 			<visual name="orange">
-				<pose>0.1575 0.0 0.0 0.0 0.0 0.0</pose>
+				<pose>0.0225 0.0 0.0 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.0031 0.295 0.28</size>
+						<size>0.0004 0.025 0.01</size>
 					</box>
 				</geometry>
 				<material>
@@ -477,10 +477,10 @@
 				</material>
 			</visual>
 			<visual name="green">
-				<pose>0.0 -0.15 0.0 0.0 0.0 0.0</pose>
+				<pose>0.0 -0.015 0.0 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.31 0.00295 0.28</size>
+						<size>0.04 0.00025 0.01</size>
 					</box>
 				</geometry>
 				<material>
@@ -488,10 +488,10 @@
 				</material>
 			</visual>
 			<visual name="yellow">
-				<pose>0.0 0.0 0.1425 0.0 0.0 0.0</pose>
+				<pose>0.0 0.0 0.0075 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.31 0.295 0.0028</size>
+						<size>0.04 0.025 0.0001</size>
 					</box>
 				</geometry>
 				<material>
@@ -500,7 +500,7 @@
 			</visual>
 		</link>
 		<joint name="ball_1_0_1" type="ball">
-			<pose>-0.15755 0.15005 -0.14254999999999998 -0.0 -0.0 -0.0</pose>
+			<pose>-0.02255 0.01505 -0.007549999999999999 -0.0 -0.0 -0.0</pose>
 			<parent>center</parent>
 			<child>cubie_1_0_1</child>
 			<axis>
@@ -513,22 +513,22 @@
 			</axis>
 		</joint>
 		<link name="cubie_1_1_0">
-			<pose>0.15755 0.15005 -0.15755 0.0 0.0 0.0</pose>
+			<pose>0.02255 0.01505 -0.02255 0.0 0.0 0.0</pose>
 			<inertial>
-				<mass>11.609325</mass>
+				<mass>0.0236925</mass>
 				<inertia>
-					<ixx>0.18306454359375002</ixx>
+					<ixx>5.775046875e-06</ixx>
 					<ixy>0.0</ixy>
 					<ixz>0.0</ixz>
-					<iyy>0.19198921218750004</iyy>
+					<iyy>7.99621875e-06</iyy>
 					<iyz>0.0</iyz>
-					<izz>0.18306454359375002</izz>
+					<izz>5.775046875e-06</izz>
 				</inertia>
 			</inertial>
 			<collision name="collision">
 				<geometry>
 					<box>
-						<size>0.315 0.3 0.315</size>
+						<size>0.045 0.03 0.045</size>
 					</box>
 				</geometry>
 				<surface>
@@ -543,7 +543,7 @@
 			<visual name="black">
 				<geometry>
 					<box>
-						<size>0.315 0.3 0.315</size>
+						<size>0.045 0.03 0.045</size>
 					</box>
 				</geometry>
 				<material>
@@ -551,10 +551,10 @@
 				</material>
 			</visual>
 			<visual name="orange">
-				<pose>0.1575 0.0 0.0 0.0 0.0 0.0</pose>
+				<pose>0.0225 0.0 0.0 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.0031 0.295 0.31</size>
+						<size>0.0004 0.025 0.04</size>
 					</box>
 				</geometry>
 				<material>
@@ -562,10 +562,10 @@
 				</material>
 			</visual>
 			<visual name="blue">
-				<pose>0.0 0.15 0.0 0.0 0.0 0.0</pose>
+				<pose>0.0 0.015 0.0 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.31 0.00295 0.31</size>
+						<size>0.04 0.00025 0.04</size>
 					</box>
 				</geometry>
 				<material>
@@ -573,10 +573,10 @@
 				</material>
 			</visual>
 			<visual name="white">
-				<pose>0.0 0.0 -0.1575 0.0 0.0 0.0</pose>
+				<pose>0.0 0.0 -0.0225 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.31 0.295 0.0031</size>
+						<size>0.04 0.025 0.0004</size>
 					</box>
 				</geometry>
 				<material>
@@ -585,7 +585,7 @@
 			</visual>
 		</link>
 		<joint name="ball_1_1_0" type="ball">
-			<pose>-0.15755 -0.15005 0.15755 -0.0 -0.0 -0.0</pose>
+			<pose>-0.02255 -0.01505 0.02255 -0.0 -0.0 -0.0</pose>
 			<parent>center</parent>
 			<child>cubie_1_1_0</child>
 			<axis>
@@ -598,22 +598,22 @@
 			</axis>
 		</joint>
 		<link name="cubie_1_1_1">
-			<pose>0.15755 0.15005 0.14254999999999998 0.0 0.0 0.0</pose>
+			<pose>0.02255 0.01505 0.007549999999999999 0.0 0.0 0.0</pose>
 			<inertial>
-				<mass>10.503675</mass>
+				<mass>0.007897499999999998</mass>
 				<inertia>
-					<ixx>0.14987431265624998</ixx>
+					<ixx>7.403906249999998e-07</ixx>
 					<ixy>0.0</ixy>
 					<ixz>0.0</ixz>
-					<iyy>0.15794901281249998</iyy>
+					<iyy>1.4807812499999996e-06</iyy>
 					<iyz>0.0</iyz>
-					<izz>0.16562982515625</izz>
+					<izz>1.925015624999999e-06</izz>
 				</inertia>
 			</inertial>
 			<collision name="collision">
 				<geometry>
 					<box>
-						<size>0.315 0.3 0.285</size>
+						<size>0.045 0.03 0.015</size>
 					</box>
 				</geometry>
 				<surface>
@@ -628,7 +628,7 @@
 			<visual name="black">
 				<geometry>
 					<box>
-						<size>0.315 0.3 0.285</size>
+						<size>0.045 0.03 0.015</size>
 					</box>
 				</geometry>
 				<material>
@@ -636,10 +636,10 @@
 				</material>
 			</visual>
 			<visual name="orange">
-				<pose>0.1575 0.0 0.0 0.0 0.0 0.0</pose>
+				<pose>0.0225 0.0 0.0 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.0031 0.295 0.28</size>
+						<size>0.0004 0.025 0.01</size>
 					</box>
 				</geometry>
 				<material>
@@ -647,10 +647,10 @@
 				</material>
 			</visual>
 			<visual name="blue">
-				<pose>0.0 0.15 0.0 0.0 0.0 0.0</pose>
+				<pose>0.0 0.015 0.0 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.31 0.00295 0.28</size>
+						<size>0.04 0.00025 0.01</size>
 					</box>
 				</geometry>
 				<material>
@@ -658,10 +658,10 @@
 				</material>
 			</visual>
 			<visual name="yellow">
-				<pose>0.0 0.0 0.1425 0.0 0.0 0.0</pose>
+				<pose>0.0 0.0 0.0075 0.0 0.0 0.0</pose>
 				<geometry>
 					<box>
-						<size>0.31 0.295 0.0028</size>
+						<size>0.04 0.025 0.0001</size>
 					</box>
 				</geometry>
 				<material>
@@ -670,7 +670,7 @@
 			</visual>
 		</link>
 		<joint name="ball_1_1_1" type="ball">
-			<pose>-0.15755 -0.15005 -0.14254999999999998 -0.0 -0.0 -0.0</pose>
+			<pose>-0.02255 -0.01505 -0.007549999999999999 -0.0 -0.0 -0.0</pose>
 			<parent>center</parent>
 			<child>cubie_1_1_1</child>
 			<axis>

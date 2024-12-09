@@ -9,7 +9,7 @@ from rubiks_cube.static_corner_generator import BlockGenerator
 import numpy as np
 
 cubie_ratios = [0.005, 0.010, 0.015]
-cube_length = 0.3
+cube_length = 0.03
 friction = 0.6
 spacing = 0.0001
 

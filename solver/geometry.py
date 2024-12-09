@@ -137,7 +137,7 @@ def get_center_of_mass(state, heights, rotation):
 
 def get_length(coordinates):
     squared_coordinates = sum([x**2 for x in coordinates])
-    return np.sqrt(sum(squared_coordinates))
+    return np.sqrt(squared_coordinates)
 
 def main():
     print(assign_heights([0.02, 0.03, 0.02, 0.03, 0.04, 0.04]))

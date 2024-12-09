@@ -31,9 +31,6 @@ gripper_rotation_offset = RollPitchYaw(0, np.pi, np.pi).ToRotationMatrix()
 cube_center_position = [0.5, 0.5, 0.25]
 face_offset_distance = 0.01
 
-fps = 3
-rotate_duration = 5.0
-
 grasping_offsets = [0.010, 0.011, 0.012, 0.013, 0.014, 0.015]
 
 def main():
@@ -43,9 +40,6 @@ def main():
             for rotation in ['U', 'F', 'R', 'U\'', 'F\'', 'R\'']:
                 try:
                     scenario_file = "models/grasping_position_cm_offset/mirror_cube_r_" + str(j) + ".scenario.dmd.yaml"
-
-
-
                     # meshcat = StartMeshcat()
                     meshcat = None
 
@@ -58,8 +52,6 @@ def main():
                     pocket_cube = supercube.PocketCube()
                     cubie_heights = assign_heights([0.02, 0.03, 0.02, 0.03, 0.04, 0.04])
                     current_state = pocket_cube.get_state()
-
-                    def get_grip_position(state, heights, rotation, vertical_offset = 0.01)
 
                     grip_coordinates = get_grip_position(current_state, cubie_heights, rotation, grasping_offset) 
                     cm_coordinates = get_center_of_mass(current_state, cubie_heights, rotation)
@@ -76,12 +68,12 @@ def main():
                                                     grasping_offset)
                     entry_duration = 2.0
                     grip_duration = 1.0
-                    rotate_duration = rotate_duration
+                    rotate_duration = 5.0
                     exit_duration = 2.0
                     durations = [entry_duration, grip_duration, rotate_duration, exit_duration]
 
                     total_duration = sum(durations)
-                    interval_count = int(total_duration * fps + 1)
+                    interval_count = int(total_duration * 3 + 1)
 
                     t_lst = np.linspace(0, total_duration, interval_count)
                     pose_lst = []
@@ -95,9 +87,9 @@ def main():
                                             grasping_offset)
                         if meshcat != None:
                             AddMeshcatTriad(meshcat, path=str(t), X_PT = pose, opacity=0.02)
-                        print(t)
-                        print(pose.translation())
-                        print('\n')
+                        # print(t)
+                        # print(pose.translation())
+                        # print('\n')
                         pose_lst.append(pose)
 
                     gripper_t_lst = np.array([0.0, 
@@ -124,7 +116,7 @@ def main():
                     angular_difference = sum(angular_differences)/len(angular_differences)
                     result.append([pg_distance, pm_distance, gm_distance, rotation, angular_difference])
 
-                    print(grasping_offset, cubie_ratio, rotation, angular_difference)            
+                    print(pg_distance, pm_distance, gm_distance, rotation, angular_difference)            
                 except:
                     print(grasping_offset, cubie_ratio, rotation)
                     print("failed!")
