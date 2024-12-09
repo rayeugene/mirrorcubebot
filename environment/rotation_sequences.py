@@ -38,7 +38,7 @@ cube_center_position = [0.5, 0.5, 0.25]
 face_offset_distance = 0.01
 
 def main():
-    rotation_sequence = ['U', 'F', 'U\'', 'R']
+    rotation_sequence = ['U', 'U']
     scenario_file = "models/urf.rotation.scenario.dmd.yaml"
 
     meshcat = StartMeshcat()
@@ -65,7 +65,7 @@ def main():
     for rotation in rotation_sequence:
         if len(pose_lst) != 0 : initial_pose = pose_lst[-1]
         current_state = pocket_cube.get_state()
-        print(current_state)
+        #print(current_state)
 
         trajs = make_gripper_trajectory(initial_pose,
                                         rotation,
@@ -83,9 +83,9 @@ def main():
             if meshcat != None:
                 AddMeshcatTriad(meshcat, path=str(t), X_PT = pose, opacity=0.02)
             pose_lst.append(pose)
-            # print(t)
-            # print(pose.translation())
-            # print('\n')
+            print(t)
+            print(pose.translation())
+            print('\n')
         pocket_cube.move(rotation)
 
 

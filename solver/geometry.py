@@ -1,37 +1,3 @@
-# def get_grip_position(state, heights, rotation):
-#     rotation_face = rotation[0]
-#     if rotation_face == 'U':
-#         top_left = heights[state[1][0][0]]
-#         top_right = heights[state[3][0][1]]
-#         bottom_left = heights[state[1][0][1]]
-#         bottom_right = heights[state[3][0][0]]
-#     # elif rotation_face  == 'F':
-#     #     top_left = heights[state[1][0][1]]
-#     #     top_right = heights[state[3][0][0]]
-#     #     bottom_left = heights[state[1][1][1]]
-#     #     bottom_right = heights[state[3][1][0]]
-#     elif rotation_face  == 'F':
-#         top_left = heights[state[5][0][0]]
-#         top_right = heights[state[0][1][0]]
-#         bottom_left = heights[state[5][0][1]]
-#         bottom_right = heights[state[0][1][1]]
-#     elif rotation_face == 'R':
-#         top_left = heights[state[2][0][1]]
-#         top_right = heights[state[4][0][0]]
-#         bottom_left = heights[state[2][1][1]]
-#         bottom_right = heights[state[4][1][0]]
-#     else :
-#         raise ValueError
-    
-#     top = top_left + top_right 
-#     bottom = bottom_left + bottom_right
-#     if top >= bottom : # grip bottom
-#         grip_center = ((bottom_right - bottom_left)/2, -0.0)
-#     else: # grip top
-#         grip_center = ((top_right - top_left)/2, 0.0)
-    
-#     return grip_center
-
 same_cubies = [
     [1,5,18],
     [2,14,17],

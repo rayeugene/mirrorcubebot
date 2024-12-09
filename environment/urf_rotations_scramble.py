@@ -32,6 +32,8 @@ from solver.geometry import assign_heights, get_grip_position
 
 from experiment.error_analysis import *
 
+from rubiks_cube.cube_scrambler import CubeScrambler
+
 pregrasp_distance = 0.07
 gripper_position_offset = np.array([0.0, 0.114, 0.0])
 gripper_rotation_offset = RollPitchYaw(0, np.pi, np.pi).ToRotationMatrix()
@@ -297,7 +299,7 @@ def setup_manipulation_station(scenario_file, meshcat = None):
 
     return builder, plant, scene_graph, station
 
-def BuildAndSimulateTrajectory(builder, station, q_traj, g_traj, meshcat = None, duration=0.01):
+def BuildAndSimulateTrajectory(builder, station, q_traj, g_traj, meshcat = None, plant=None, cube_joint_init_state=None, duration=0.01):
     """Simulate trajectory for manipulation station.
     @param q_traj: Trajectory class used to initialize TrajectorySource for joints.
     @param g_traj: Trajectory class used to initialize TrajectorySource for gripper.
@@ -312,8 +314,20 @@ def BuildAndSimulateTrajectory(builder, station, q_traj, g_traj, meshcat = None,
         g_traj_system.get_output_port(), station.GetInputPort("wsg.position")
     )
 
-    diagram = builder.Build()
+    diagram = builder.Build() 
     simulator = Simulator(diagram)
+
+    plant_context = plant.GetMyContextFromRoot(simulator.get_mutable_context())
+    for x in range(2):
+        for y in range(2):
+            for z in range(2):
+                if x == 1 and y == 1 and z == 0:
+                    continue
+                else:
+                    joint_name = f"ball_{x}_{y}_{z}"
+                    joint = plant.GetJointByName(joint_name)
+                    joint.set_angles(plant_context, cube_joint_init_state[x,y,z,:])   
+
     if meshcat != None:
         meshcat.StartRecording(set_visualizations_while_recording=False)
     simulator.AdvanceTo(duration)
@@ -416,6 +430,8 @@ def get_cubie_names ():
 
 def main():
     rotation = 'U'
+
+    scramble_sequences = ['U', 'F'] #Problamatic Sequences : ['F\''], 
     scenario_file = "models/urf.rotation.scenario.dmd.yaml"
 
     meshcat = StartMeshcat()
@@ -429,6 +445,12 @@ def main():
 
     pocket_cube = supercube.PocketCube()
     cubie_heights = assign_heights([0.02, 0.03, 0.02, 0.03, 0.04, 0.04])
+
+    scrambler = CubeScrambler()
+    scrambler.apply_sequence(scramble_sequences)
+    for scramble in scramble_sequences: 
+        pocket_cube.move(scramble)
+    cube_joint_init_state = scrambler.get_joint_rpys()
     current_state = pocket_cube.get_state()
 
     trajs = make_gripper_trajectory(initial_pose,
@@ -476,24 +498,13 @@ def main():
     
     q_knots = np.array(create_q_knots(pose_lst, scenario_file))
     q_traj = PiecewisePolynomial.CubicShapePreserving(t_lst, q_knots[:, 0:7].T)
-    simulator= BuildAndSimulateTrajectory(builder, station, q_traj, g_traj, meshcat, total_duration)
+    simulator= BuildAndSimulateTrajectory(builder, station, q_traj, g_traj, meshcat, plant, cube_joint_init_state, total_duration)
     
     final_X_WB_all = plant.get_body_poses_output_port().Eval(plant.GetMyContextFromRoot(simulator.get_mutable_context()))
 
     result = get_angular_differences(plant, initial_X_WB_all, final_X_WB_all, current_state, rotation)
-
     print(result)
 
-    # for cubie_name in get_cubie_names():
-    #     idx = plant.GetBodyByName(cubie_name).index()
-    #     initial_pose = initial_X_WB_all[idx]
-    #     final_pose = final_X_WB_all[idx]
-    #     print(cubie_name)
-    #     print('Before')
-    #     print_pose(initial_pose)
-    #     print('After')
-    #     print_pose(final_pose)
-    #     print('\n')
 
 if __name__ == "__main__":
     main()

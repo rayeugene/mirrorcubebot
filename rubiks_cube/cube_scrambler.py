@@ -24,7 +24,7 @@ class CubeScrambler:
             for y in range(2):
                 for z in range(2):
                     self.cubie_idx_to_ball_joint_idx[x,y,z] = (int(x),int(y),int(z))
-        print(self.cubie_idx_to_ball_joint_idx)
+        # print(self.cubie_idx_to_ball_joint_idx)
     
     def convert_sequence_to_robot_space(self, seq):
         # we are not allowing B, L, or D moves for now because the rear back cubie is anchored
@@ -46,7 +46,7 @@ class CubeScrambler:
     def apply_move(self, move:str):
         if "F" in move:
             F_cubie_idxs = self.cubie_idx_to_ball_joint_idx[0,:,:].flatten()
-            print('f_cubie_idxs',F_cubie_idxs)
+            # print('f_cubie_idxs',F_cubie_idxs)
             tmp = self.cubie_idx_to_ball_joint_idx[0,0,0]
             if "'" in move:
                 for idx in F_cubie_idxs:
@@ -104,7 +104,7 @@ class CubeScrambler:
 def main():
     cube_scrambler = CubeScrambler()
     cube_scrambler.apply_move('R')
-    print(cube_scrambler.get_joint_rpys())
+    # print(cube_scrambler.get_joint_rpys())
 
 if __name__ == "__main__":
     main()
