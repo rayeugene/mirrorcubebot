@@ -584,7 +584,7 @@
 				</material>
 			</visual>
 		</link>
-		<joint name="ball_1_1_0" type="ball">
+		<joint name="ball_1_1_0" type="fixed">
 			<pose>-0.020199999999999996 -0.0152 0.0202 -0.0 -0.0 -0.0</pose>
 			<parent>center</parent>
 			<child>cubie_1_1_0</child>

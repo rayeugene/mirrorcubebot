@@ -44,42 +44,43 @@ class CubeScrambler:
             self.apply_move(move)
 
     def apply_move(self, move:str):
-        if "R" in move:
-            R_cubie_idxs = self.cubie_idx_to_ball_joint_idx[0,:,:].flatten()
+        if "F" in move:
+            F_cubie_idxs = self.cubie_idx_to_ball_joint_idx[0,:,:].flatten()
+            print('f_cubie_idxs',F_cubie_idxs)
             tmp = self.cubie_idx_to_ball_joint_idx[0,0,0]
             if "'" in move:
-                for idx in R_cubie_idxs:
-                    self.ball_joint_poses[idx][1] = (self.ball_joint_poses[idx][1] + np.pi/2) % (2*np.pi)
+                for idx in F_cubie_idxs:
+                    self.ball_joint_poses[idx][0] = (self.ball_joint_poses[idx][1] - np.pi/2) % (2*np.pi)
                 self.cubie_idx_to_ball_joint_idx[0,0,0] = self.cubie_idx_to_ball_joint_idx[0,1,0]
                 self.cubie_idx_to_ball_joint_idx[0,1,0] = self.cubie_idx_to_ball_joint_idx[0,1,1]
                 self.cubie_idx_to_ball_joint_idx[0,1,1] = self.cubie_idx_to_ball_joint_idx[0,0,1]
                 self.cubie_idx_to_ball_joint_idx[0,0,1] = tmp
             else:
-                for idx in R_cubie_idxs:
-                    self.ball_joint_poses[idx][1] = (self.ball_joint_poses[idx][1] - np.pi/2) % (2*np.pi)
+                for idx in F_cubie_idxs:
+                    self.ball_joint_poses[idx][0] = (self.ball_joint_poses[idx][1] + np.pi/2) % (2*np.pi)
                 self.cubie_idx_to_ball_joint_idx[0,0,0] = self.cubie_idx_to_ball_joint_idx[0,0,1]
                 self.cubie_idx_to_ball_joint_idx[0,0,1] = self.cubie_idx_to_ball_joint_idx[0,1,1]
                 self.cubie_idx_to_ball_joint_idx[0,1,1] = self.cubie_idx_to_ball_joint_idx[0,1,0]
                 self.cubie_idx_to_ball_joint_idx[0,1,0] = tmp
-        elif "F" in move:
-            F_cubie_idxs = self.cubie_idx_to_ball_joint_idx[:,1,:].flatten()
-            tmp = self.cubie_idx_to_ball_joint_idx[0,1,0]
+        elif "R" in move:
+            R_cubie_idxs = self.cubie_idx_to_ball_joint_idx[:,0,:].flatten()
+            tmp = self.cubie_idx_to_ball_joint_idx[0,0,0]
             if "'" in move:
-                for idx in F_cubie_idxs:
-                    self.ball_joint_poses[idx][0] = (self.ball_joint_poses[idx][0] + np.pi/2) % (2*np.pi)
-                self.cubie_idx_to_ball_joint_idx[0,1,0] = self.cubie_idx_to_ball_joint_idx[0,1,1]
-                self.cubie_idx_to_ball_joint_idx[0,1,1] = self.cubie_idx_to_ball_joint_idx[1,1,1]
-                self.cubie_idx_to_ball_joint_idx[1,1,1] = self.cubie_idx_to_ball_joint_idx[1,1,0]
-                self.cubie_idx_to_ball_joint_idx[1,1,0] = tmp
+                for idx in R_cubie_idxs:
+                    self.ball_joint_poses[idx][1] = (self.ball_joint_poses[idx][0] + np.pi/2) % (2*np.pi)
+                self.cubie_idx_to_ball_joint_idx[0,0,0] = self.cubie_idx_to_ball_joint_idx[0,0,1]
+                self.cubie_idx_to_ball_joint_idx[0,0,1] = self.cubie_idx_to_ball_joint_idx[0,1,1]
+                self.cubie_idx_to_ball_joint_idx[0,1,1] = self.cubie_idx_to_ball_joint_idx[0,1,0]
+                self.cubie_idx_to_ball_joint_idx[0,1,0] = tmp
             else:
-                for idx in F_cubie_idxs:
-                    self.ball_joint_poses[idx][0] = (self.ball_joint_poses[idx][0] - np.pi/2) % (2*np.pi)
-                self.cubie_idx_to_ball_joint_idx[0,1,0] = self.cubie_idx_to_ball_joint_idx[1,1,0]
-                self.cubie_idx_to_ball_joint_idx[1,1,0] = self.cubie_idx_to_ball_joint_idx[1,1,1]
-                self.cubie_idx_to_ball_joint_idx[1,1,1] = self.cubie_idx_to_ball_joint_idx[0,1,1]
-                self.cubie_idx_to_ball_joint_idx[0,1,1] = tmp
+                for idx in R_cubie_idxs:
+                    self.ball_joint_poses[idx][1] = (self.ball_joint_poses[idx][0] - np.pi/2) % (2*np.pi)
+                self.cubie_idx_to_ball_joint_idx[0,0,0] = self.cubie_idx_to_ball_joint_idx[0,1,0]
+                self.cubie_idx_to_ball_joint_idx[0,1,0] = self.cubie_idx_to_ball_joint_idx[0,1,1]
+                self.cubie_idx_to_ball_joint_idx[0,1,1] = self.cubie_idx_to_ball_joint_idx[0,0,1]
+                self.cubie_idx_to_ball_joint_idx[0,0,1] = tmp
         else:
-            U_cubie_idxs = self.cubie_idx_to_ball_joint_idx[0,:,:].flatten()
+            U_cubie_idxs = self.cubie_idx_to_ball_joint_idx[:,:,1].flatten()
             tmp = self.cubie_idx_to_ball_joint_idx[0,0,1]
             if "'" in move:
                 for idx in U_cubie_idxs:
@@ -91,10 +92,10 @@ class CubeScrambler:
             else:
                 for idx in U_cubie_idxs:
                     self.ball_joint_poses[idx][2] = (self.ball_joint_poses[idx][2] - np.pi/2) % (2*np.pi)
-                self.cubie_idx_to_ball_joint_idx[0,0,1] = self.cubie_idx_to_ball_joint_idx[0,0,1]
                 self.cubie_idx_to_ball_joint_idx[0,0,1] = self.cubie_idx_to_ball_joint_idx[0,1,1]
-                self.cubie_idx_to_ball_joint_idx[0,1,1] = self.cubie_idx_to_ball_joint_idx[0,1,1]
-                self.cubie_idx_to_ball_joint_idx[0,1,1] = tmp
+                self.cubie_idx_to_ball_joint_idx[0,1,1] = self.cubie_idx_to_ball_joint_idx[1,1,1]
+                self.cubie_idx_to_ball_joint_idx[1,1,1] = self.cubie_idx_to_ball_joint_idx[1,0,1]
+                self.cubie_idx_to_ball_joint_idx[1,0,1] = tmp
             
 
     def get_joint_rpys(self):

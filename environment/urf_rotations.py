@@ -293,13 +293,32 @@ def BuildAndSimulateTrajectory(builder, station, q_traj, g_traj, meshcat, plant=
 
     diagram = builder.Build() 
     simulator = Simulator(diagram)
-    # plant_context = plant.GetMyContextFromRoot(simulator.get_mutable_context())
-    # for x in range(2):
-    #     for y in range(2):
-    #         for z in range(2):
-    #             joint_name = f"ball_{x}_{y}_{z}"
-    #             joint = plant.GetJointByName(joint_name)
-    #             joint.set_angles(plant_context, cube_joint_init_state[x,y,z,:])   
+
+
+    plant_context = plant.GetMyContextFromRoot(simulator.get_mutable_context())
+    # joint_name = f"ball_0_0_0"
+    # joint_name_1 = f"ball_0_1_1"
+    # joint_name_2 = f"ball_0_0_1"
+    # joint_name_3 = f"ball_0_1_0"
+    # joints = [joint_name, joint_name_1, joint_name_2, joint_name_3]
+    # # joints = [joint_name]
+    # for joint_nme in joints:
+    #     joint = plant.GetJointByName(joint_nme)
+    #     joint.set_angles(plant_context, [1.57,0,0])  
+
+    # joint1 = plant.GetJointByName(joint_name_1)
+    # joint1.set_angles(plant_context, [1.57,0,0])
+    for x in range(2):
+        for y in range(2):
+            for z in range(2):
+                if x == 1 and y == 1 and z == 0:
+                    continue
+                else:
+                    joint_name = f"ball_{x}_{y}_{z}"
+                    print(joint_name, cube_joint_init_state[x,y,z,:])
+                    joint = plant.GetJointByName(joint_name)
+                    joint.set_angles(plant_context, cube_joint_init_state[x,y,z,:])   
+
     meshcat.StartRecording(set_visualizations_while_recording=False)
     simulator.AdvanceTo(duration)
     meshcat.PublishRecording()
@@ -399,7 +418,7 @@ def get_cubie_names ():
     return cubie_names
 
 def main():
-    rotation = 'F'
+    rotation = 'U'
     scenario_file = "models/urf.rotation.scenario.dmd.yaml"
 
     meshcat = StartMeshcat()
@@ -412,29 +431,29 @@ def main():
 
     pocket_cube = supercube.PocketCube()
     cubie_heights = assign_heights([0.02, 0.03, 0.02, 0.03, 0.04, 0.04])
-    # scramble = rotation
-    # pocket_cube.move(scramble)
-    # # scramble = pocket_cube.scramble().split()
+    scramble = rotation
+    pocket_cube.move(scramble)
+    # scramble = pocket_cube.scramble().split()
 
-    # scrambler = CubeScrambler()
-    # robot_scramble_moves = scrambler.convert_sequence_to_robot_space(scramble)
-    # scrambler.apply_sequence(robot_scramble_moves)
-    # cube_joint_init_state = scrambler.get_joint_rpys()
-    # print(cube_joint_init_state)
+    scrambler = CubeScrambler()
+    robot_scramble_moves = scrambler.convert_sequence_to_robot_space(scramble)
+    scrambler.apply_sequence(robot_scramble_moves)
+    cube_joint_init_state = scrambler.get_joint_rpys()
+    print(cube_joint_init_state)
     current_state = pocket_cube.get_state()
 
-    cube_joint_init_state = np.zeros((2,2,2,3))
+    # cube_joint_init_state = np.zeros((2,2,2,3))
 
     # moved_idx = [(0,1,0),(0,1,1),(1,1,0),(1,1,1)]
     # for idx in moved_idx:
-    #     cube_joint_init_state = 
+    #     cube_joint_init_state[idx] = [0,0,90]
 
     # for x in range(2):
     #     for y in range(2):
     #         for z in range(2):
     #             joint_name = f"ball_{x}_{y}_{z}"
     #             joint = plant.GetJointByName(joint_name)
-    #             joint.set_angles(context, cube_joint_init_state[x,y,z,:])
+                # joint.set_angles(context, cube_joint_init_state[x,y,z,:])
 
     trajs = make_gripper_trajectory(initial_pose,
                                     rotation,
@@ -484,16 +503,16 @@ def main():
     
     final_X_WB_all = plant.get_body_poses_output_port().Eval(plant.GetMyContextFromRoot(simulator.get_mutable_context()))
 
-    for cubie_name in get_cubie_names():
-        idx = plant.GetBodyByName(cubie_name).index()
-        initial_pose = initial_X_WB_all[idx]
-        final_pose = final_X_WB_all[idx]
-        print(cubie_name)
-        print('Before')
-        print_pose(initial_pose)
-        print('After')
-        print_pose(final_pose)
-        print('\n')
+    # for cubie_name in get_cubie_names():
+    #     idx = plant.GetBodyByName(cubie_name).index()
+    #     initial_pose = initial_X_WB_all[idx]
+    #     final_pose = final_X_WB_all[idx]
+    #     print(cubie_name)
+    #     print('Before')
+    #     print_pose(initial_pose)
+    #     print('After')
+    #     print_pose(final_pose)
+    #     print('\n')
 
 if __name__ == "__main__":
     main()
