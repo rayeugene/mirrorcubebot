@@ -41,7 +41,7 @@ def get_rotation(state, rotation, cubie, previous_rotation):
             orientation = RollPitchYaw(angle, 0, 0)
     elif rotation_face == 'R':
         if original_cubie[1] == '0':
-            angle = -np.pi/2
+            angle = np.pi/2
             if rotation_face != rotation:
                 angle = -angle
             orientation = RollPitchYaw(0, angle, 0)

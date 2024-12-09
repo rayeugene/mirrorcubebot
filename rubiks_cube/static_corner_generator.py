@@ -34,7 +34,7 @@ class BlockGenerator:
         cubie_link = ET.Element("link", name=link_name)
 
         pose = ET.SubElement(cubie_link, "pose")
-        pose.text = BlockGenerator.list_to_spaced_str(pos_from_parent)
+        pose.text = BlockGenerator.list_to_spaced_str(pos_from_parent) + " 0.0 0.0 0.0"
 
         inertial = ET.SubElement(cubie_link, "inertial")
         ET.SubElement(inertial, "mass").text = str(mass)

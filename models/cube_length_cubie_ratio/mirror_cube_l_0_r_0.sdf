@@ -1,0 +1,686 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+	<model name="mirror_cube_2x2">
+		<link name="center"/>
+		<link name="cubie_0_0_0">
+			<pose>-0.01005 -0.01255 -0.015050000000000001 0.0 0.0 0.0</pose>
+			<inertial>
+				<mass>0.005850000000000001</mass>
+				<inertia>
+					<ixx>7.434375000000002e-07</ixx>
+					<ixy>0.0</ixy>
+					<ixz>0.0</ixz>
+					<iyy>6.337500000000002e-07</iyy>
+					<iyz>0.0</iyz>
+					<izz>4.996875000000001e-07</izz>
+				</inertia>
+			</inertial>
+			<collision name="collision">
+				<geometry>
+					<box>
+						<size>0.02 0.025 0.030000000000000002</size>
+					</box>
+				</geometry>
+				<surface>
+					<friction>
+						<ode>
+							<mu>0.6</mu>
+							<mu2>0.6</mu2>
+						</ode>
+					</friction>
+				</surface>
+			</collision>
+			<visual name="black">
+				<geometry>
+					<box>
+						<size>0.02 0.025 0.030000000000000002</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>0 0 0 1</diffuse>
+				</material>
+			</visual>
+			<visual name="red">
+				<pose>-0.01 0.0 0.0 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.00015 0.02 0.025</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>1 0 0 1</diffuse>
+				</material>
+			</visual>
+			<visual name="green">
+				<pose>0.0 -0.0125 0.0 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.015 0.0002 0.025</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>0 1 0 1</diffuse>
+				</material>
+			</visual>
+			<visual name="white">
+				<pose>0.0 0.0 -0.015000000000000001 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.015 0.02 0.00025</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>1 1 1 1</diffuse>
+				</material>
+			</visual>
+		</link>
+		<joint name="ball_0_0_0" type="ball">
+			<pose>0.01005 0.01255 0.015050000000000001 -0.0 -0.0 -0.0</pose>
+			<parent>center</parent>
+			<child>cubie_0_0_0</child>
+			<axis>
+				<dynamics>
+					<damping>0.1</damping>
+				</dynamics>
+				<limit>
+					<effort>0</effort>
+				</limit>
+			</axis>
+		</joint>
+		<link name="cubie_0_0_1">
+			<pose>-0.01005 -0.01255 0.01005 0.0 0.0 0.0</pose>
+			<inertial>
+				<mass>0.0039000000000000003</mass>
+				<inertia>
+					<ixx>3.331250000000001e-07</ixx>
+					<ixy>0.0</ixy>
+					<ixz>0.0</ixz>
+					<iyy>2.6000000000000005e-07</iyy>
+					<iyz>0.0</iyz>
+					<izz>3.331250000000001e-07</izz>
+				</inertia>
+			</inertial>
+			<collision name="collision">
+				<geometry>
+					<box>
+						<size>0.02 0.025 0.02</size>
+					</box>
+				</geometry>
+				<surface>
+					<friction>
+						<ode>
+							<mu>0.6</mu>
+							<mu2>0.6</mu2>
+						</ode>
+					</friction>
+				</surface>
+			</collision>
+			<visual name="black">
+				<geometry>
+					<box>
+						<size>0.02 0.025 0.02</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>0 0 0 1</diffuse>
+				</material>
+			</visual>
+			<visual name="red">
+				<pose>-0.01 0.0 0.0 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.00015 0.02 0.015</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>1 0 0 1</diffuse>
+				</material>
+			</visual>
+			<visual name="green">
+				<pose>0.0 -0.0125 0.0 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.015 0.0002 0.015</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>0 1 0 1</diffuse>
+				</material>
+			</visual>
+			<visual name="yellow">
+				<pose>0.0 0.0 0.01 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.015 0.02 0.00015</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>1 1 0 1</diffuse>
+				</material>
+			</visual>
+		</link>
+		<joint name="ball_0_0_1" type="ball">
+			<pose>0.01005 0.01255 -0.01005 -0.0 -0.0 -0.0</pose>
+			<parent>center</parent>
+			<child>cubie_0_0_1</child>
+			<axis>
+				<dynamics>
+					<damping>0.1</damping>
+				</dynamics>
+				<limit>
+					<effort>0</effort>
+				</limit>
+			</axis>
+		</joint>
+		<link name="cubie_0_1_0">
+			<pose>-0.01005 0.01255 -0.015050000000000001 0.0 0.0 0.0</pose>
+			<inertial>
+				<mass>0.005850000000000001</mass>
+				<inertia>
+					<ixx>7.434375000000002e-07</ixx>
+					<ixy>0.0</ixy>
+					<ixz>0.0</ixz>
+					<iyy>6.337500000000002e-07</iyy>
+					<iyz>0.0</iyz>
+					<izz>4.996875000000001e-07</izz>
+				</inertia>
+			</inertial>
+			<collision name="collision">
+				<geometry>
+					<box>
+						<size>0.02 0.025 0.030000000000000002</size>
+					</box>
+				</geometry>
+				<surface>
+					<friction>
+						<ode>
+							<mu>0.6</mu>
+							<mu2>0.6</mu2>
+						</ode>
+					</friction>
+				</surface>
+			</collision>
+			<visual name="black">
+				<geometry>
+					<box>
+						<size>0.02 0.025 0.030000000000000002</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>0 0 0 1</diffuse>
+				</material>
+			</visual>
+			<visual name="red">
+				<pose>-0.01 0.0 0.0 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.00015 0.02 0.025</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>1 0 0 1</diffuse>
+				</material>
+			</visual>
+			<visual name="blue">
+				<pose>0.0 0.0125 0.0 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.015 0.0002 0.025</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>0 0 1 1</diffuse>
+				</material>
+			</visual>
+			<visual name="white">
+				<pose>0.0 0.0 -0.015000000000000001 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.015 0.02 0.00025</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>1 1 1 1</diffuse>
+				</material>
+			</visual>
+		</link>
+		<joint name="ball_0_1_0" type="ball">
+			<pose>0.01005 -0.01255 0.015050000000000001 -0.0 -0.0 -0.0</pose>
+			<parent>center</parent>
+			<child>cubie_0_1_0</child>
+			<axis>
+				<dynamics>
+					<damping>0.1</damping>
+				</dynamics>
+				<limit>
+					<effort>0</effort>
+				</limit>
+			</axis>
+		</joint>
+		<link name="cubie_0_1_1">
+			<pose>-0.01005 0.01255 0.01005 0.0 0.0 0.0</pose>
+			<inertial>
+				<mass>0.0039000000000000003</mass>
+				<inertia>
+					<ixx>3.331250000000001e-07</ixx>
+					<ixy>0.0</ixy>
+					<ixz>0.0</ixz>
+					<iyy>2.6000000000000005e-07</iyy>
+					<iyz>0.0</iyz>
+					<izz>3.331250000000001e-07</izz>
+				</inertia>
+			</inertial>
+			<collision name="collision">
+				<geometry>
+					<box>
+						<size>0.02 0.025 0.02</size>
+					</box>
+				</geometry>
+				<surface>
+					<friction>
+						<ode>
+							<mu>0.6</mu>
+							<mu2>0.6</mu2>
+						</ode>
+					</friction>
+				</surface>
+			</collision>
+			<visual name="black">
+				<geometry>
+					<box>
+						<size>0.02 0.025 0.02</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>0 0 0 1</diffuse>
+				</material>
+			</visual>
+			<visual name="red">
+				<pose>-0.01 0.0 0.0 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.00015 0.02 0.015</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>1 0 0 1</diffuse>
+				</material>
+			</visual>
+			<visual name="blue">
+				<pose>0.0 0.0125 0.0 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.015 0.0002 0.015</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>0 0 1 1</diffuse>
+				</material>
+			</visual>
+			<visual name="yellow">
+				<pose>0.0 0.0 0.01 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.015 0.02 0.00015</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>1 1 0 1</diffuse>
+				</material>
+			</visual>
+		</link>
+		<joint name="ball_0_1_1" type="ball">
+			<pose>0.01005 -0.01255 -0.01005 -0.0 -0.0 -0.0</pose>
+			<parent>center</parent>
+			<child>cubie_0_1_1</child>
+			<axis>
+				<dynamics>
+					<damping>0.1</damping>
+				</dynamics>
+				<limit>
+					<effort>0</effort>
+				</limit>
+			</axis>
+		</joint>
+		<link name="cubie_1_0_0">
+			<pose>0.015050000000000001 -0.01255 -0.015050000000000001 0.0 0.0 0.0</pose>
+			<inertial>
+				<mass>0.008775000000000002</mass>
+				<inertia>
+					<ixx>1.1151562500000005e-06</ixx>
+					<ixy>0.0</ixy>
+					<ixz>0.0</ixz>
+					<iyy>1.3162500000000005e-06</iyy>
+					<iyz>0.0</iyz>
+					<izz>1.1151562500000005e-06</izz>
+				</inertia>
+			</inertial>
+			<collision name="collision">
+				<geometry>
+					<box>
+						<size>0.030000000000000002 0.025 0.030000000000000002</size>
+					</box>
+				</geometry>
+				<surface>
+					<friction>
+						<ode>
+							<mu>0.6</mu>
+							<mu2>0.6</mu2>
+						</ode>
+					</friction>
+				</surface>
+			</collision>
+			<visual name="black">
+				<geometry>
+					<box>
+						<size>0.030000000000000002 0.025 0.030000000000000002</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>0 0 0 1</diffuse>
+				</material>
+			</visual>
+			<visual name="orange">
+				<pose>0.015000000000000001 0.0 0.0 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.00025 0.02 0.025</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>1.0 0.5 0.0 1.0</diffuse>
+				</material>
+			</visual>
+			<visual name="green">
+				<pose>0.0 -0.0125 0.0 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.025 0.0002 0.025</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>0 1 0 1</diffuse>
+				</material>
+			</visual>
+			<visual name="white">
+				<pose>0.0 0.0 -0.015000000000000001 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.025 0.02 0.00025</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>1 1 1 1</diffuse>
+				</material>
+			</visual>
+		</link>
+		<joint name="ball_1_0_0" type="ball">
+			<pose>-0.015050000000000001 0.01255 0.015050000000000001 -0.0 -0.0 -0.0</pose>
+			<parent>center</parent>
+			<child>cubie_1_0_0</child>
+			<axis>
+				<dynamics>
+					<damping>0.1</damping>
+				</dynamics>
+				<limit>
+					<effort>0</effort>
+				</limit>
+			</axis>
+		</joint>
+		<link name="cubie_1_0_1">
+			<pose>0.015050000000000001 -0.01255 0.01005 0.0 0.0 0.0</pose>
+			<inertial>
+				<mass>0.005850000000000001</mass>
+				<inertia>
+					<ixx>4.996875000000001e-07</ixx>
+					<ixy>0.0</ixy>
+					<ixz>0.0</ixz>
+					<iyy>6.337500000000002e-07</iyy>
+					<iyz>0.0</iyz>
+					<izz>7.434375000000002e-07</izz>
+				</inertia>
+			</inertial>
+			<collision name="collision">
+				<geometry>
+					<box>
+						<size>0.030000000000000002 0.025 0.02</size>
+					</box>
+				</geometry>
+				<surface>
+					<friction>
+						<ode>
+							<mu>0.6</mu>
+							<mu2>0.6</mu2>
+						</ode>
+					</friction>
+				</surface>
+			</collision>
+			<visual name="black">
+				<geometry>
+					<box>
+						<size>0.030000000000000002 0.025 0.02</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>0 0 0 1</diffuse>
+				</material>
+			</visual>
+			<visual name="orange">
+				<pose>0.015000000000000001 0.0 0.0 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.00025 0.02 0.015</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>1.0 0.5 0.0 1.0</diffuse>
+				</material>
+			</visual>
+			<visual name="green">
+				<pose>0.0 -0.0125 0.0 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.025 0.0002 0.015</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>0 1 0 1</diffuse>
+				</material>
+			</visual>
+			<visual name="yellow">
+				<pose>0.0 0.0 0.01 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.025 0.02 0.00015</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>1 1 0 1</diffuse>
+				</material>
+			</visual>
+		</link>
+		<joint name="ball_1_0_1" type="ball">
+			<pose>-0.015050000000000001 0.01255 -0.01005 -0.0 -0.0 -0.0</pose>
+			<parent>center</parent>
+			<child>cubie_1_0_1</child>
+			<axis>
+				<dynamics>
+					<damping>0.1</damping>
+				</dynamics>
+				<limit>
+					<effort>0</effort>
+				</limit>
+			</axis>
+		</joint>
+		<link name="cubie_1_1_0">
+			<pose>0.015050000000000001 0.01255 -0.015050000000000001 0.0 0.0 0.0</pose>
+			<inertial>
+				<mass>0.008775000000000002</mass>
+				<inertia>
+					<ixx>1.1151562500000005e-06</ixx>
+					<ixy>0.0</ixy>
+					<ixz>0.0</ixz>
+					<iyy>1.3162500000000005e-06</iyy>
+					<iyz>0.0</iyz>
+					<izz>1.1151562500000005e-06</izz>
+				</inertia>
+			</inertial>
+			<collision name="collision">
+				<geometry>
+					<box>
+						<size>0.030000000000000002 0.025 0.030000000000000002</size>
+					</box>
+				</geometry>
+				<surface>
+					<friction>
+						<ode>
+							<mu>0.6</mu>
+							<mu2>0.6</mu2>
+						</ode>
+					</friction>
+				</surface>
+			</collision>
+			<visual name="black">
+				<geometry>
+					<box>
+						<size>0.030000000000000002 0.025 0.030000000000000002</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>0 0 0 1</diffuse>
+				</material>
+			</visual>
+			<visual name="orange">
+				<pose>0.015000000000000001 0.0 0.0 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.00025 0.02 0.025</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>1.0 0.5 0.0 1.0</diffuse>
+				</material>
+			</visual>
+			<visual name="blue">
+				<pose>0.0 0.0125 0.0 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.025 0.0002 0.025</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>0 0 1 1</diffuse>
+				</material>
+			</visual>
+			<visual name="white">
+				<pose>0.0 0.0 -0.015000000000000001 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.025 0.02 0.00025</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>1 1 1 1</diffuse>
+				</material>
+			</visual>
+		</link>
+		<joint name="ball_1_1_0" type="ball">
+			<pose>-0.015050000000000001 -0.01255 0.015050000000000001 -0.0 -0.0 -0.0</pose>
+			<parent>center</parent>
+			<child>cubie_1_1_0</child>
+			<axis>
+				<dynamics>
+					<damping>0.1</damping>
+				</dynamics>
+				<limit>
+					<effort>0</effort>
+				</limit>
+			</axis>
+		</joint>
+		<link name="cubie_1_1_1">
+			<pose>0.015050000000000001 0.01255 0.01005 0.0 0.0 0.0</pose>
+			<inertial>
+				<mass>0.005850000000000001</mass>
+				<inertia>
+					<ixx>4.996875000000001e-07</ixx>
+					<ixy>0.0</ixy>
+					<ixz>0.0</ixz>
+					<iyy>6.337500000000002e-07</iyy>
+					<iyz>0.0</iyz>
+					<izz>7.434375000000002e-07</izz>
+				</inertia>
+			</inertial>
+			<collision name="collision">
+				<geometry>
+					<box>
+						<size>0.030000000000000002 0.025 0.02</size>
+					</box>
+				</geometry>
+				<surface>
+					<friction>
+						<ode>
+							<mu>0.6</mu>
+							<mu2>0.6</mu2>
+						</ode>
+					</friction>
+				</surface>
+			</collision>
+			<visual name="black">
+				<geometry>
+					<box>
+						<size>0.030000000000000002 0.025 0.02</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>0 0 0 1</diffuse>
+				</material>
+			</visual>
+			<visual name="orange">
+				<pose>0.015000000000000001 0.0 0.0 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.00025 0.02 0.015</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>1.0 0.5 0.0 1.0</diffuse>
+				</material>
+			</visual>
+			<visual name="blue">
+				<pose>0.0 0.0125 0.0 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.025 0.0002 0.015</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>0 0 1 1</diffuse>
+				</material>
+			</visual>
+			<visual name="yellow">
+				<pose>0.0 0.0 0.01 0.0 0.0 0.0</pose>
+				<geometry>
+					<box>
+						<size>0.025 0.02 0.00015</size>
+					</box>
+				</geometry>
+				<material>
+					<diffuse>1 1 0 1</diffuse>
+				</material>
+			</visual>
+		</link>
+		<joint name="ball_1_1_1" type="ball">
+			<pose>-0.015050000000000001 -0.01255 -0.01005 -0.0 -0.0 -0.0</pose>
+			<parent>center</parent>
+			<child>cubie_1_1_1</child>
+			<axis>
+				<dynamics>
+					<damping>0.1</damping>
+				</dynamics>
+				<limit>
+					<effort>0</effort>
+				</limit>
+			</axis>
+		</joint>
+	</model>
+</sdf>

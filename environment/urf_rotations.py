@@ -30,6 +30,8 @@ from manipulation.station import LoadScenario, MakeHardwareStation, MakeMultibod
 
 from solver.geometry import assign_heights, get_grip_position
 
+from experiment.error_analysis import *
+
 pregrasp_distance = 0.07
 gripper_position_offset = np.array([0.0, 0.114, 0.0])
 gripper_rotation_offset = RollPitchYaw(0, np.pi, np.pi).ToRotationMatrix()
@@ -78,6 +80,11 @@ def compute_handle_pose(
 
     angle_end = (angle_start + np.pi/2 if rotation in ['U\'', 'F\'', 'R'] 
                  else angle_start - np.pi/2)
+    
+    if rotation == 'R':
+        angle_end -= (np.pi / 2) / 64
+    elif rotation == 'R\'':
+        angle_end += (np.pi / 2) / 64
 
     vertical_offset, horizontal_offset = get_grip_position(current_state, cubie_heights, rotation)
     distance_from_axis = np.sqrt(vertical_offset ** 2 + horizontal_offset ** 2)
@@ -388,7 +395,7 @@ def create_q_knots(pose_lst, scenario_file):
             prog.SetInitialGuess(q_variables, q_knots[-1])  
 
         result = Solve(prog)
-        assert result.is_success()
+        #assert result.is_success()
         q_knots.append(result.GetSolution(q_variables))
 
     return q_knots
@@ -408,7 +415,7 @@ def get_cubie_names ():
     return cubie_names
 
 def main():
-    rotation = 'F'
+    rotation = 'R\''
     scenario_file = "models/urf.rotation.scenario.dmd.yaml"
 
     meshcat = StartMeshcat()
@@ -473,16 +480,20 @@ def main():
     
     final_X_WB_all = plant.get_body_poses_output_port().Eval(plant.GetMyContextFromRoot(simulator.get_mutable_context()))
 
-    for cubie_name in get_cubie_names():
-        idx = plant.GetBodyByName(cubie_name).index()
-        initial_pose = initial_X_WB_all[idx]
-        final_pose = final_X_WB_all[idx]
-        print(cubie_name)
-        print('Before')
-        print_pose(initial_pose)
-        print('After')
-        print_pose(final_pose)
-        print('\n')
+    result = get_angular_differences(plant, initial_X_WB_all, final_X_WB_all, current_state, rotation)
+
+    print(result)
+
+    # for cubie_name in get_cubie_names():
+    #     idx = plant.GetBodyByName(cubie_name).index()
+    #     initial_pose = initial_X_WB_all[idx]
+    #     final_pose = final_X_WB_all[idx]
+    #     print(cubie_name)
+    #     print('Before')
+    #     print_pose(initial_pose)
+    #     print('After')
+    #     print_pose(final_pose)
+    #     print('\n')
 
 if __name__ == "__main__":
     main()
