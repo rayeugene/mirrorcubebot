@@ -280,7 +280,7 @@ def CreateIiwaControllerPlant(scenario_file):
 
     return plant_robot, link_frame_indices
 
-def setup_manipulation_station(meshcat, scenario_file):
+def setup_manipulation_station(scenario_file, meshcat = None):
     builder = DiagramBuilder()
     scenario = LoadScenario(filename=scenario_file)
     station = builder.AddSystem(MakeHardwareStation(scenario, meshcat, package_xmls=[os.getcwd() + "/package.xml"]))
@@ -290,7 +290,7 @@ def setup_manipulation_station(meshcat, scenario_file):
 
     return builder, plant, scene_graph, station
 
-def BuildAndSimulateTrajectory(builder, station, q_traj, g_traj, meshcat, duration=0.01):
+def BuildAndSimulateTrajectory(builder, station, q_traj, g_traj, meshcat = None, duration=0.01):
     """Simulate trajectory for manipulation station.
     @param q_traj: Trajectory class used to initialize TrajectorySource for joints.
     @param g_traj: Trajectory class used to initialize TrajectorySource for gripper.
@@ -307,9 +307,11 @@ def BuildAndSimulateTrajectory(builder, station, q_traj, g_traj, meshcat, durati
 
     diagram = builder.Build()
     simulator = Simulator(diagram)
-    meshcat.StartRecording(set_visualizations_while_recording=False)
+    if meshcat != None:
+        meshcat.StartRecording(set_visualizations_while_recording=False)
     simulator.AdvanceTo(duration)
-    meshcat.PublishRecording()
+    if meshcat != None:
+        meshcat.PublishRecording()
 
     return simulator
 
@@ -410,8 +412,9 @@ def main():
     scenario_file = "models/urf.rotation.scenario.dmd.yaml"
 
     meshcat = StartMeshcat()
+    #meshcat = None
 
-    builder, plant, scene_graph, station = setup_manipulation_station(meshcat, scenario_file=scenario_file)
+    builder, plant, scene_graph, station = setup_manipulation_station(scenario_file, meshcat)
 
     context = plant.CreateDefaultContext()
     gripper = plant.GetBodyByName("body")
@@ -425,10 +428,10 @@ def main():
                                     rotation,
                                     current_state,
                                     cubie_heights)
-    entry_duration = 5.0
+    entry_duration = 2.0
     grip_duration = 1.0
     rotate_duration = 5.0
-    exit_duration = 1.0
+    exit_duration = 2.0
     durations = [entry_duration, grip_duration, rotate_duration, exit_duration]
 
     total_duration = sum(durations)
@@ -443,7 +446,8 @@ def main():
                                current_state, 
                                cubie_heights, 
                                durations)
-        AddMeshcatTriad(meshcat, path=str(t), X_PT = pose, opacity=0.02)
+        if meshcat != None:
+            AddMeshcatTriad(meshcat, path=str(t), X_PT = pose, opacity=0.02)
         pose_lst.append(pose)
         # print(t)
         # print(pose.translation())

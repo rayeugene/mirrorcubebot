@@ -38,12 +38,13 @@ cube_center_position = [0.5, 0.5, 0.25]
 face_offset_distance = 0.01
 
 def main():
-    rotation_sequence = ['U', 'F']
+    rotation_sequence = ['U', 'F', 'U\'', 'R']
     scenario_file = "models/urf.rotation.scenario.dmd.yaml"
 
     meshcat = StartMeshcat()
+    #meshcat = None
 
-    builder, plant, scene_graph, station = setup_manipulation_station(meshcat, scenario_file)
+    builder, plant, scene_graph, station = setup_manipulation_station(scenario_file, meshcat)
     context = plant.CreateDefaultContext()
     gripper = plant.GetBodyByName("body")
     initial_pose = plant.EvalBodyPoseInWorld(context, gripper)
@@ -51,10 +52,10 @@ def main():
     pocket_cube = supercube.PocketCube()
     cubie_heights = assign_heights([0.02, 0.03, 0.02, 0.03, 0.04, 0.04])
 
-    entry_duration = 5.0
+    entry_duration = 2.0
     grip_duration = 1.0
     rotate_duration = 5.0
-    exit_duration = 1.0
+    exit_duration = 2.0
     durations = [entry_duration, grip_duration, rotate_duration, exit_duration]
 
     total_duration = sum(durations)
@@ -79,7 +80,8 @@ def main():
                                 current_state, 
                                 cubie_heights, 
                                 durations)
-            AddMeshcatTriad(meshcat, path=str(t), X_PT = pose, opacity=0.02)
+            if meshcat != None:
+                AddMeshcatTriad(meshcat, path=str(t), X_PT = pose, opacity=0.02)
             pose_lst.append(pose)
             # print(t)
             # print(pose.translation())

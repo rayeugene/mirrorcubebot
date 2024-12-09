@@ -8,6 +8,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from solver.geometry import assign_heights, get_grip_position
 
 import numpy as np
+import json
 import supercube
 from pydrake.all import (
     PiecewisePolynomial,
@@ -31,15 +32,16 @@ cube_center_position = [0.5, 0.5, 0.25]
 face_offset_distance = 0.01
 
 def main():
-
     for i, friciton in enumerate(frictions):
         for j, spacing in enumerate(spacings):
             for rotation in ['U', 'F', 'R']:
-                scenario_file = "models/urf.rotation.scenario.dmd.yaml"
+                scenario_file = "models/friction_and_spacing/f_" +str(i) + "_s_" + str(j) + "scenario.dmd.yaml"
+                #scenario_file = "models/urf.rotation.scenario.dmd.yaml"
 
-                meshcat = StartMeshcat()
+                #meshcat = StartMeshcat()
+                meshcat = None
 
-                builder, plant, scene_graph, station = setup_manipulation_station(meshcat, scenario_file=scenario_file)
+                builder, plant, scene_graph, station = setup_manipulation_station(scenario_file, meshcat)
 
                 context = plant.CreateDefaultContext()
                 gripper = plant.GetBodyByName("body")
@@ -71,7 +73,8 @@ def main():
                                         current_state, 
                                         cubie_heights, 
                                         durations)
-                    AddMeshcatTriad(meshcat, path=str(t), X_PT = pose, opacity=0.02)
+                    if meshcat != None:
+                        AddMeshcatTriad(meshcat, path=str(t), X_PT = pose, opacity=0.02)
                     pose_lst.append(pose)
 
                 gripper_t_lst = np.array([0.0, 
@@ -94,7 +97,10 @@ def main():
                 
                 final_poses_all = plant.get_body_poses_output_port().Eval(plant.GetMyContextFromRoot(simulator.get_mutable_context()))
 
-                get_angular_differences(plant, initial_poses_all, final_poses_all, current_state, rotation)
+                result = get_angular_differences(plant, initial_poses_all, final_poses_all, current_state, rotation)
+                filename = 'experiment/friction_and_spacing_results/' + 'f_' + str(i) + '_s_' + str(j) + '_' + rotation + '.json'
+                with open(filename, "w") as file:
+                    json.dump(result, file,)
 
 if __name__ == "__main__":
     main()
