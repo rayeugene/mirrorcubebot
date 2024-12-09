@@ -21,7 +21,7 @@ def get_volume(number, state, heights):
         result *= heights[state[x][y][z]]
     return result
 
-def get_grip_position(state, heights, rotation):
+def get_grip_position(state, heights, rotation, vertical_offset = 0.01):
     rotation_face = rotation[0]
     if rotation_face == 'U':
         top_left_volume = get_volume(1, state, heights)
@@ -63,9 +63,9 @@ def get_grip_position(state, heights, rotation):
     bottom = bottom_left_volume + bottom_right_volume
 
     if top >= bottom : # grip bottom
-        grip_center = ((bottom_right - bottom_left)/2, 0.01)
+        grip_center = ((bottom_right - bottom_left)/2, vertical_offset)
     else: # grip top
-        grip_center = ((top_right - top_left)/2, -0.01)
+        grip_center = ((top_right - top_left)/2, -vertical_offset)
     return grip_center
 
 def assign_heights(lengths):
