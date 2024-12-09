@@ -1,3 +1,5 @@
+import numpy as np
+
 same_cubies = [
     [1,5,18],
     [2,14,17],
@@ -132,6 +134,10 @@ def get_center_of_mass(state, heights, rotation):
     vertical_offset = (- top_left_vertical_offset * top_left_volume - bottom_left_vertical_offset * bottom_left_volume + top_right_vertical_offset * top_right_volume + bottom_right_vertical_offset * bottom_right_volume) / total_volume
 
     return horizontal_offset, vertical_offset
+
+def get_length(coordinates):
+    squared_coordinates = sum([x**2 for x in coordinates])
+    return np.sqrt(sum(squared_coordinates))
 
 def main():
     print(assign_heights([0.02, 0.03, 0.02, 0.03, 0.04, 0.04]))

@@ -4,9 +4,6 @@ import os
 # Add the project root directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-# Import functions
-from solver.geometry import assign_heights, get_grip_position
-
 import numpy as np
 import supercube
 from pydrake.all import (
@@ -43,7 +40,8 @@ def compute_handle_pose(
     cube_center_position, 
     current_state, 
     cubie_heights, 
-    rotation
+    rotation,
+    grasping_vertical_offset = 0.01
 ):
     """
     Compute the position and rotation of a handle based on cube parameters, rotation, and time.
@@ -86,7 +84,7 @@ def compute_handle_pose(
     elif rotation == 'R\'':
         angle_end += (np.pi / 2) / 64
 
-    vertical_offset, horizontal_offset = get_grip_position(current_state, cubie_heights, rotation)
+    vertical_offset, horizontal_offset = get_grip_position(current_state, cubie_heights, rotation, vertical_offset = grasping_vertical_offset)
     distance_from_axis = np.sqrt(vertical_offset ** 2 + horizontal_offset ** 2)
 
     adjusted_t = min(max(t,0), 1)
@@ -117,7 +115,8 @@ def compute_handle_pose(
 def make_gripper_trajectory(initial_pose,
                             rotation,
                             current_state,
-                            cubie_heights):
+                            cubie_heights,
+                            grasping_vertical_offset = 0.01):
     """
     Generates trajectories for a robotic gripper's entry and exit maneuvers.
 
@@ -134,10 +133,10 @@ def make_gripper_trajectory(initial_pose,
             - exit_orientation_traj: Orientation trajectory for the exit phase.
             - exit_position_traj: Position trajectory for the exit phase.
     """
-    pregrasp_pose = InterpolatePoseRotate(-1.0, rotation, current_state, cubie_heights)
-    initial_grasp_pose = InterpolatePoseRotate(0.0, rotation, current_state, cubie_heights)
-    final_grasp_pose = InterpolatePoseRotate(1.0, rotation, current_state, cubie_heights)
-    postgrasp_pose = InterpolatePoseRotate(2.0, rotation, current_state, cubie_heights)
+    pregrasp_pose = InterpolatePoseRotate(-1.0, rotation, current_state, cubie_heights, grasping_vertical_offset)
+    initial_grasp_pose = InterpolatePoseRotate(0.0, rotation, current_state, cubie_heights, grasping_vertical_offset)
+    final_grasp_pose = InterpolatePoseRotate(1.0, rotation, current_state, cubie_heights, grasping_vertical_offset)
+    postgrasp_pose = InterpolatePoseRotate(2.0, rotation, current_state, cubie_heights, grasping_vertical_offset)
     ready_pose = ReadyPose()
 
     # Entry orientation trajectory
@@ -179,7 +178,8 @@ def InterpolatePoseRotate(
         t: float, 
         rotation: str, 
         current_state, 
-        cubie_heights) -> RigidTransform:
+        cubie_heights,
+        grasping_vertical_offset = 0.01) -> RigidTransform:
     """
     Interpolates the pose for opening doors based on the rotation type and time.
 
@@ -194,7 +194,8 @@ def InterpolatePoseRotate(
                                            cube_center_position, 
                                            current_state, 
                                            cubie_heights, 
-                                           rotation)
+                                           rotation,
+                                           grasping_vertical_offset)
 
     # Determine roll-pitch-yaw order based on rotation
     rotation_face = rotation[0]
@@ -246,7 +247,8 @@ def InterpolatePose(t,
                     trajs,
                     current_state, 
                     cubie_heights,
-                    durations
+                    durations,
+                    grasping_vertical_offset
                     ):
     entry_duration, grip_duration, rotate_duration, exit_duration = durations
     entry_traj_rotation, entry_traj_translation, exit_traj_rotation, exit_traj_translation = trajs
@@ -262,7 +264,8 @@ def InterpolatePose(t,
         return InterpolatePoseRotate((t - (entry_duration + grip_duration)) / rotate_duration, 
                                      rotation, 
                                      current_state, 
-                                     cubie_heights)
+                                     cubie_heights,
+                                     grasping_vertical_offset)
     elif t < entry_duration + grip_duration + rotate_duration + exit_duration:
         return InterpolatePoseExit((t - (entry_duration + grip_duration + rotate_duration)) / exit_duration,
                                    exit_traj_rotation,
@@ -434,7 +437,8 @@ def main():
     trajs = make_gripper_trajectory(initial_pose,
                                     rotation,
                                     current_state,
-                                    cubie_heights)
+                                    cubie_heights,
+                                    grasping_vertical_offset = 0.01)
     entry_duration = 2.0
     grip_duration = 1.0
     rotate_duration = 5.0
@@ -452,7 +456,8 @@ def main():
                                trajs,
                                current_state, 
                                cubie_heights, 
-                               durations)
+                               durations,
+                               grasping_vertical_offset = 0.01)
         if meshcat != None:
             AddMeshcatTriad(meshcat, path=str(t), X_PT = pose, opacity=0.02)
         pose_lst.append(pose)
