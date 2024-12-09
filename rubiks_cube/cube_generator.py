@@ -257,8 +257,8 @@ CubeGenerator.generate_mirror_2_by_2(
     cube_center = np.array([0.02, 0.03, 0.04]), 
     mass_density = 390, 
     file_out = "models/cubes/mirror_cube_2_by_2.sdf",
-    layer_spacing = 0.0005, 
-    friction_coeff=np.array([0.5,0.5])
+    layer_spacing = 0.0001, 
+    friction_coeff=np.array([0.6,0.6])
 )  
 
 # sdf = ET.Element('sdf', {'version':'1.7'})
