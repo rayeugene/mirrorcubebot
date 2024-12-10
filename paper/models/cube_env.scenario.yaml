@@ -1,0 +1,57 @@
+directives:
+- add_model:
+    name: mirror_1
+    file: package://mirror_cube_bot/paper/models/mirror_1.sdf
+- add_weld:
+    parent: world
+    child: center_mirror_1
+    X_PC: 
+        translation: [-2, 0, 0]
+        rotation: !Rpy { deg: [0, 0, 0] }
+- add_model:
+    name: mirror_2
+    file: package://mirror_cube_bot/paper/models/mirror_2.sdf
+- add_weld:
+    parent: world
+    child: center_mirror_2
+    X_PC: 
+        translation: [-2.1, 0, 0]
+        rotation: !Rpy { deg: [0, 0, 0] }
+- add_model:
+    name: mirror_big_space
+    file: package://mirror_cube_bot/paper/models/mirror_big_space.sdf
+- add_weld:
+    parent: world
+    child: center_mirror_big_space
+    X_PC: 
+        translation: [0, 0, 0]
+        rotation: !Rpy { deg: [0, 0, 0] }
+- add_model:
+    name: mirror_normal_space
+    file: package://mirror_cube_bot/paper/models/mirror_normal_space.sdf
+- add_weld:
+    parent: world
+    child: center_mirror_normal_space
+    X_PC: 
+        translation: [0.1, 0, 0]
+        rotation: !Rpy { deg: [0, 0, 0] }
+- add_model:
+    name: mirror_big
+    file: package://mirror_cube_bot/paper/models/mirror_big.sdf
+- add_weld:
+    parent: world
+    child: center_mirror_big
+    X_PC: 
+        translation: [2, 0, 0]
+        rotation: !Rpy { deg: [0, 0, 0] }
+- add_model:
+    name: mirror_small
+    file: package://mirror_cube_bot/paper/models/mirror_small.sdf
+- add_weld:
+    parent: world
+    child: center_mirror_small
+    X_PC: 
+        translation: [2.2, 0, 0]
+        rotation: !Rpy { deg: [0, 0, 0] }
+
+

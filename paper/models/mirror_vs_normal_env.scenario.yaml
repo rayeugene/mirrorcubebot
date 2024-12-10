@@ -1,0 +1,22 @@
+directives:
+- add_model:
+    name: pocket_cube
+    file: package://mirror_cube_bot/paper/models/pocket_cube.sdf
+- add_weld:
+    parent: world
+    child: center
+    X_PC: 
+        translation: [0, 0, 0]
+        rotation: !Rpy { deg: [0, 0, 0] }
+- add_model:
+    name: mirror_normal_space
+    file: package://mirror_cube_bot/paper/models/mirror_normal_space.sdf
+- add_weld:
+    parent: world
+    child: center_mirror_normal_space
+    X_PC: 
+        translation: [0.1, 0, 0]
+        rotation: !Rpy { deg: [0, 0, 0] }
+
+
+
