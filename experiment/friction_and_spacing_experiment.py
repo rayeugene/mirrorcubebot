@@ -34,14 +34,16 @@ face_offset_distance = 0.01
 def main():
     for i, friction in enumerate(frictions):
         for j, spacing in enumerate(spacings):
-            # for rotation in ['U', 'F', 'R', 'U\'', 'F\'', 'R\'']:
-            for rotation in ['R', 'R\'']:
+            for rotation in ['U', 'F', 'R', 'U\'', 'F\'', 'R\'']:
+            #for rotation in ['R', 'R\'']:
+                if not (friction == 0.1 and spacing == 0.0001 and rotation == 'U'):
+                    continue
                 try:
                     scenario_file = "models/friction_and_spacing/f_" +str(i) + "_s_" + str(j) + "scenario.dmd.yaml"
                     #scenario_file = "models/urf.rotation.scenario.dmd.yaml"
 
-                    #meshcat = StartMeshcat()
-                    meshcat = None
+                    meshcat = StartMeshcat()
+                    #meshcat = None
 
                     builder, plant, scene_graph, station = setup_manipulation_station(scenario_file, meshcat)
 

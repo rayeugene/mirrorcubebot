@@ -28,7 +28,7 @@ from manipulation.meshcat_utils import AddMeshcatTriad
 from manipulation.scenarios import AddMultibodyTriad
 from manipulation.station import LoadScenario, MakeHardwareStation, MakeMultibodyPlant
 
-from solver.geometry import assign_heights, get_grip_position
+from solver.geometry import *
 from urf_rotations import *
 
 pregrasp_distance = 0.07
@@ -38,7 +38,7 @@ cube_center_position = [0.5, 0.5, 0.25]
 face_offset_distance = 0.01
 
 def main():
-    rotation_sequence = ['U', 'U']
+    rotation_sequence = ['U', 'F']
     scenario_file = "models/urf.rotation.scenario.dmd.yaml"
 
     meshcat = StartMeshcat()
@@ -83,10 +83,12 @@ def main():
             if meshcat != None:
                 AddMeshcatTriad(meshcat, path=str(t), X_PT = pose, opacity=0.02)
             pose_lst.append(pose)
-            print(t)
-            print(pose.translation())
-            print('\n')
+            # print(t)
+            # print(pose.translation())
+            # print('\n')
         pocket_cube.move(rotation)
+
+        print(get_center_of_mass(pocket_cube.get_state(), cubie_heights, 'U'))
 
 
     t_lst = np.linspace(0, total_duration * len(rotation_sequence), interval_count* len(rotation_sequence))

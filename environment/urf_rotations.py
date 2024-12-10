@@ -25,7 +25,7 @@ from manipulation.meshcat_utils import AddMeshcatTriad
 from manipulation.scenarios import AddMultibodyTriad
 from manipulation.station import LoadScenario, MakeHardwareStation, MakeMultibodyPlant
 
-from solver.geometry import assign_heights, get_grip_position
+from solver.geometry import *
 
 from experiment.error_analysis import *
 
@@ -248,7 +248,7 @@ def InterpolatePose(t,
                     current_state, 
                     cubie_heights,
                     durations,
-                    grasping_vertical_offset
+                    grasping_vertical_offset = 0.01
                     ):
     entry_duration, grip_duration, rotate_duration, exit_duration = durations
     entry_traj_rotation, entry_traj_translation, exit_traj_rotation, exit_traj_translation = trajs
