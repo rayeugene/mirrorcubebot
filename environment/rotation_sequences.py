@@ -38,7 +38,7 @@ cube_center_position = [0.5, 0.5, 0.25]
 face_offset_distance = 0.01
 
 def main():
-    rotation_sequence = ['U', 'F', 'R', 'U']
+    rotation_sequence = ['U', 'F', 'R']
     scenario_file = "models/urf.rotation.scenario.dmd.yaml"
 
     meshcat = StartMeshcat()
