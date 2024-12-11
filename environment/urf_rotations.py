@@ -418,7 +418,7 @@ def get_cubie_names ():
     return cubie_names
 
 def main():
-    rotation = 'U'
+    rotation = 'R'
     scenario_file = "models/urf.rotation.scenario.dmd.yaml"
 
     meshcat = StartMeshcat()
@@ -439,10 +439,10 @@ def main():
                                     current_state,
                                     cubie_heights,
                                     grasping_vertical_offset = 0.01)
-    entry_duration = 2.0
-    grip_duration = 1.0
-    rotate_duration = 5.0
-    exit_duration = 2.0
+    entry_duration = 4.0
+    grip_duration = 2.0
+    rotate_duration = 10.0
+    exit_duration = 4.0
     durations = [entry_duration, grip_duration, rotate_duration, exit_duration]
 
     total_duration = sum(durations)
